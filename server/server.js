@@ -9,10 +9,11 @@ app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root@123",
-  database: "zynthor_it",
+  host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 3306,
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || "zynthor_it",
 });
 
 db.connect((err) => {
@@ -61,8 +62,8 @@ app.post("/api/contact", (req, res) => {
   });
 });
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });

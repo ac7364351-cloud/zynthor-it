@@ -24,8 +24,8 @@ const Contact = () => {
     setSubmitted(false);
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/contact",
+const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/api/contact`,
         {
           method: "POST",
           headers: {
@@ -46,7 +46,7 @@ const Contact = () => {
           message: "",
         });
       } else {
-        alert(data.message);
+        alert(data.message || "Something went wrong.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -62,7 +62,10 @@ const Contact = () => {
       className="relative py-24 bg-slate-900 overflow-hidden"
     >
       {/* Background Glow */}
-      <div className="absolute right-0 bottom-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-1/4 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+      </div>
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
 
@@ -74,14 +77,12 @@ const Contact = () => {
 
           <h2 className="text-4xl md:text-5xl font-bold text-white mt-4">
             Let's Build Something{" "}
-            <span className="text-blue-500">
-              Great
-            </span>
+            <span className="text-blue-500">Great</span>
           </h2>
 
           <p className="text-slate-400 text-lg mt-5 leading-relaxed">
-            Have a project or idea in mind? Send us a message and
-            let's discuss how we can help.
+            Have a project or idea in mind? Send us a message and let's
+            discuss how we can help.
           </p>
         </div>
 
@@ -97,8 +98,8 @@ const Contact = () => {
               </h3>
 
               <p className="text-slate-400 mt-3 leading-relaxed">
-                Tell us about your business, project, or idea.
-                We'll get back to you as soon as possible.
+                Tell us about your business, project, or idea. We'll get
+                back to you as soon as possible.
               </p>
             </div>
 
@@ -124,6 +125,7 @@ const Contact = () => {
             className="bg-slate-950 border border-slate-800 rounded-2xl p-8"
           >
 
+            {/* Name */}
             <div>
               <label className="block text-slate-300 mb-2">
                 Name
@@ -140,6 +142,7 @@ const Contact = () => {
               />
             </div>
 
+            {/* Email */}
             <div className="mt-5">
               <label className="block text-slate-300 mb-2">
                 Email
@@ -156,6 +159,7 @@ const Contact = () => {
               />
             </div>
 
+            {/* Message */}
             <div className="mt-5">
               <label className="block text-slate-300 mb-2">
                 Message
@@ -169,9 +173,11 @@ const Contact = () => {
                 rows="6"
                 required
                 className="w-full bg-slate-900 border border-slate-700 text-white rounded-lg px-4 py-3 outline-none focus:border-blue-500 transition resize-none"
-              ></textarea>
+              />
+
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
@@ -180,6 +186,7 @@ const Contact = () => {
               {loading ? "Sending..." : "Send Message →"}
             </button>
 
+            {/* Success */}
             {submitted && (
               <div className="mt-5 bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg p-4 text-center">
                 Message sent successfully! We'll get back to you soon.
