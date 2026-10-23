@@ -2,20 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <link rel="icon" type="image/svg+xml" href="/z-logo.svg" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>Zynthor IT</title>
-
+    <meta name="theme-color" content="#020617" />
+    <script>
+      if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+    </script>
+    <title>Zynthor IT | Full-Stack Web Development, Custom Apps & Data Analytics</title>
     <meta
       name="description"
-      content="Zynthor IT provides modern web development, web applications and data analytics solutions."
+      content="Zynthor IT is an independent digital engineering agency specializing in custom website development, full-stack web applications, business automation, and data analytics dashboards."
     />
+    <meta property="og:title" content="Zynthor IT | Digital Engineering Solutions" />
+    <meta
+      property="og:description"
+      content="High-performance websites, custom web applications, and data analytics tailored for growing businesses."
+    />
+    <meta property="og:type" content="website" />
   </head>
-
-  <body>
+  <body class="bg-slate-950 text-slate-100 antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
