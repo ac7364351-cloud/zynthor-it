@@ -91,7 +91,7 @@ const Contact = ({ preselectedService, initialTab = "quote" }) => {
     setServerError(null);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+      const apiUrl = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/+$/, "");
       const endpoint = activeTab === "quote" ? `${apiUrl}/api/quote` : `${apiUrl}/api/contact`;
 
       const payload = {

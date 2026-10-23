@@ -6,19 +6,67 @@ require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  port: Number(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || "zynthor_it",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+// Database configuration helper (supports both DATABASE_URL and discrete variables)
+const getPoolConfig = () => {
+  if (process.env.DATABASE_URL) {
+    const isCloud =
+      !process.env.DATABASE_URL.includes("localhost") &&
+      !process.env.DATABASE_URL.includes("127.0.0.1");
+    const useSsl =
+      process.env.DB_SSL === "true" ||
+      isCloud ||
+      process.env.NODE_ENV === "production";
+
+    return {
+      uri: process.env.DATABASE_URL,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+      ssl: useSsl
+        ? {
+            minVersion: "TLSv1.2",
+            rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === "true",
+          }
+        : undefined,
+    };
+  }
+
+  const isLocal =
+    !process.env.DB_HOST ||
+    process.env.DB_HOST === "localhost" ||
+    process.env.DB_HOST === "127.0.0.1";
+  const useSsl =
+    process.env.DB_SSL === "true" ||
+    (!isLocal && process.env.NODE_ENV === "production");
+
+  return {
+    host: process.env.DB_HOST || "localhost",
+    port: Number(process.env.DB_PORT) || 3306,
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || "zynthor_it",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    ssl: useSsl
+      ? {
+          minVersion: "TLSv1.2",
+          rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === "true",
+        }
+      : undefined,
+  };
+};
+
+const pool = mysql.createPool(getPoolConfig());
 
 // Safe column addition helper
 const ensureColumn = (tableName, columnName, columnDefinition) => {
@@ -27,7 +75,17 @@ const ensureColumn = (tableName, columnName, columnDefinition) => {
     FROM INFORMATION_SCHEMA.COLUMNS 
     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?
   `;
-  const dbName = process.env.DB_NAME || "zynthor_it";
+  let dbName = process.env.DB_NAME || "zynthor_it";
+  if (!process.env.DB_NAME && process.env.DATABASE_URL) {
+    try {
+      const parsed = new URL(process.env.DATABASE_URL);
+      if (parsed.pathname && parsed.pathname.length > 1) {
+        dbName = parsed.pathname.slice(1);
+      }
+    } catch {
+      // fallback
+    }
+  }
   pool.query(checkSql, [dbName, tableName, columnName], (err, rows) => {
     if (err) {
       console.error(`Error checking column ${columnName}:`, err.message);
