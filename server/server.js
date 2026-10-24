@@ -30,11 +30,12 @@ const getPoolConfig = () => {
       uri: process.env.DATABASE_URL,
       waitForConnections: true,
       connectionLimit: 10,
+      connectTimeout: 10000,
       queueLimit: 0,
       ssl: useSsl
         ? {
             minVersion: "TLSv1.2",
-            rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === "true",
+            rejectUnauthorized: false,
           }
         : undefined,
     };
@@ -56,11 +57,12 @@ const getPoolConfig = () => {
     database: process.env.DB_NAME || "zynthor_it",
     waitForConnections: true,
     connectionLimit: 10,
+    connectTimeout: 10000,
     queueLimit: 0,
     ssl: useSsl
       ? {
           minVersion: "TLSv1.2",
-          rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === "true",
+          rejectUnauthorized: false,
         }
       : undefined,
   };
@@ -156,12 +158,16 @@ app.get("/api/health", (req, res) => {
       return res.status(500).json({
         status: "error",
         database: "disconnected",
-        message: err.message
+        hasDbUrl: Boolean(process.env.DATABASE_URL),
+        hasDbHost: Boolean(process.env.DB_HOST),
+        error: err ? (err.message || err.code || String(err)) : "unknown",
       });
     }
     res.json({
       status: "ok",
-      database: "connected"
+      database: "connected",
+      hasDbUrl: Boolean(process.env.DATABASE_URL),
+      hasDbHost: Boolean(process.env.DB_HOST),
     });
   });
 });
