@@ -17,17 +17,20 @@ app.use(express.json());
 
 // Database configuration helper (supports both DATABASE_URL and discrete variables)
 const getPoolConfig = () => {
-  if (process.env.DATABASE_URL) {
+  const rawUrl = process.env.DATABASE_URL ? String(process.env.DATABASE_URL).trim() : "";
+  const isValidUrl = rawUrl.startsWith("mysql://") || rawUrl.startsWith("mysqls://");
+
+  if (isValidUrl) {
     const isCloud =
-      !process.env.DATABASE_URL.includes("localhost") &&
-      !process.env.DATABASE_URL.includes("127.0.0.1");
+      !rawUrl.includes("localhost") &&
+      !rawUrl.includes("127.0.0.1");
     const useSsl =
       process.env.DB_SSL === "true" ||
       isCloud ||
       process.env.NODE_ENV === "production";
 
     return {
-      uri: process.env.DATABASE_URL,
+      uri: rawUrl,
       waitForConnections: true,
       connectionLimit: 10,
       connectTimeout: 10000,
@@ -39,6 +42,10 @@ const getPoolConfig = () => {
           }
         : undefined,
     };
+  }
+
+  if (rawUrl && !isValidUrl) {
+    console.warn("[Database Config] Warning: DATABASE_URL does not start with mysql://. Falling back to discrete DB_* variables.");
   }
 
   const isLocal =
@@ -68,7 +75,13 @@ const getPoolConfig = () => {
   };
 };
 
-const pool = mysql.createPool(getPoolConfig());
+let pool;
+try {
+  pool = mysql.createPool(getPoolConfig());
+} catch (poolErr) {
+  console.error("[Database Pool Error]:", poolErr.message);
+  pool = mysql.createPool({ host: "localhost", port: 3306 });
+}
 
 // Safe column addition helper
 const ensureColumn = (tableName, columnName, columnDefinition) => {
@@ -78,9 +91,10 @@ const ensureColumn = (tableName, columnName, columnDefinition) => {
     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?
   `;
   let dbName = process.env.DB_NAME || "zynthor_it";
-  if (!process.env.DB_NAME && process.env.DATABASE_URL) {
+  const rawUrl = process.env.DATABASE_URL ? String(process.env.DATABASE_URL).trim() : "";
+  if (!process.env.DB_NAME && (rawUrl.startsWith("mysql://") || rawUrl.startsWith("mysqls://"))) {
     try {
-      const parsed = new URL(process.env.DATABASE_URL);
+      const parsed = new URL(rawUrl);
       if (parsed.pathname && parsed.pathname.length > 1) {
         dbName = parsed.pathname.slice(1);
       }
