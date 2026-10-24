@@ -32,3 +32,6 @@ dist-ssr
 # Internal reports & development notes
 *REPORT.md
 ZYNTHOR_IT_PROJECT_REPORT.md
+.vercel
+.env*
+!.env.example
