@@ -60,31 +60,28 @@ export default function BusinessOSLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-theme-main text-theme-primary flex flex-col font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
-      {/* Top Navigation Bar */}
-      <OSNavbar
-        onOpenSearch={() => setSearchOpen(true)}
-        onOpenQuickAction={() => setQuickActionOpen(true)}
-        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
-        isSidebarCollapsed={sidebarCollapsed}
+    <div className="flex h-screen w-screen max-w-full overflow-hidden bg-theme-main text-theme-primary font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
+      {/* Sidebar: Desktop flex child (fixed height h-screen), Mobile off-canvas */}
+      <OSSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        isCollapsed={sidebarCollapsed}
         onToggleCollapse={toggleSidebarCollapse}
       />
 
-      <div className="flex-1 w-full max-w-full flex overflow-hidden relative">
-        {/* Persistent & Responsive Collapsible Sidebar */}
-        <OSSidebar
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          isCollapsed={sidebarCollapsed}
+      {/* Main Content Column: Automatically adapts to remaining width (viewport - sidebar) */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative">
+        {/* Top Navigation Bar: Strictly 100% width of the content column, avatar never clipped */}
+        <OSNavbar
+          onOpenSearch={() => setSearchOpen(true)}
+          onOpenQuickAction={() => setQuickActionOpen(true)}
+          onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+          isSidebarCollapsed={sidebarCollapsed}
           onToggleCollapse={toggleSidebarCollapse}
         />
 
-        {/* Main Content Area — Automatically adapts to sidebar width */}
-        <main
-          className={`flex-1 w-full max-w-full overflow-x-hidden min-h-[calc(100vh-4rem)] p-3 sm:p-6 lg:p-8 bg-theme-main transition-[padding] duration-200 ease-in-out ${
-            sidebarCollapsed ? "lg:pl-20" : "lg:pl-64"
-          }`}
-        >
+        {/* Main Content Scrollable Viewport: No horizontal overflow, fluid responsive */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 lg:p-8 bg-theme-main transition-colors">
           <Outlet />
         </main>
       </div>

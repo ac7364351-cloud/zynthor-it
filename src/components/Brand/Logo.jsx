@@ -5,6 +5,7 @@ export default function Logo({
   showWordmark = true,
   className = "",
   collapsed = false,
+  fullWidth = false,
 }) {
   return (
     <ZynthorLogo
@@ -13,6 +14,7 @@ export default function Logo({
       variant={showWordmark ? "full" : "icon"}
       className={className}
       badgeText="IT"
+      fullWidth={fullWidth}
     />
   );
 }

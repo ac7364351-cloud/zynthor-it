@@ -93,10 +93,9 @@ export default function OSNavbar({
   const userInitial = user?.name ? user.name.trim().charAt(0).toUpperCase() : "A";
 
   return (
-    <header className="sticky top-0 z-40 h-16 w-full border-b border-theme-subtle bg-theme-secondary/90 backdrop-blur-xl px-2 sm:px-4 lg:px-6 flex items-center justify-between text-theme-primary transition-colors box-border">
+    <header className="h-16 w-full shrink-0 border-b border-theme-subtle bg-theme-secondary/95 backdrop-blur-xl px-3 sm:px-6 lg:px-8 flex items-center justify-between text-theme-primary transition-colors box-border relative z-30 select-none">
       {/* ====================================================================
-          LEFT: Mobile Menu + Collapse Toggle + Logo + Workspace Selector
-          Responsive and overflow-safe on 360px/390px/768px/1280px/1440px
+          LEFT: Mobile Menu + Collapse Toggle + Mobile Logo + Workspace Selector
           ==================================================================== */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 shrink-1">
         {/* Mobile Sidebar Hamburger Toggle */}
@@ -121,47 +120,39 @@ export default function OSNavbar({
           </button>
         )}
 
-        {/* Brand Link — Responsive: Icon-only on mobile (<sm), full on desktop (sm:) */}
+        {/* Mobile-only Brand Logo Link (Desktop logo is already permanently in sidebar) */}
         <Link
           to="/app"
-          className="flex items-center shrink-0 overflow-hidden"
+          className="lg:hidden flex items-center shrink-0 overflow-hidden"
           title="Zynthor Business OS"
         >
-          {/* Mobile Icon-only logo */}
-          <div className="sm:hidden">
-            <ZynthorLogo size="sm" collapsed={true} />
-          </div>
-          {/* Desktop logo when sidebar is collapsed or on tablet */}
-          <div className="hidden sm:block">
-            <ZynthorLogo size="sm" collapsed={false} badgeText="OS" />
-          </div>
+          <ZynthorLogo size="sm" collapsed={true} />
         </Link>
 
         {/* Vertical Workspace / Tenant Switcher */}
         <div className="relative min-w-0" ref={bRef}>
           <button
             onClick={() => setBusinessDropdown(!businessDropdown)}
-            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-2.5 py-1.5 rounded-xl bg-theme-surface/80 hover:bg-theme-surface border border-theme-subtle text-xs font-medium text-theme-secondary hover:text-theme-primary transition-all shadow-sm cursor-pointer min-w-0 shrink-1"
+            className="flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 rounded-xl bg-theme-surface hover:bg-theme-surface-hover border border-theme-subtle text-xs font-medium text-theme-secondary hover:text-theme-primary transition-all shadow-sm cursor-pointer min-w-0 shrink-1"
             title={`Active Workspace: ${business?.name || "Business OS"}`}
           >
             {getIndustryIcon(business?.industry)}
-            {/* Show truncated name on sm+ screens; hide text on tiny mobile (<sm) */}
-            <span className="hidden sm:inline-block truncate max-w-[100px] md:max-w-[160px] font-semibold text-theme-primary">
+            <span className="hidden sm:inline-block truncate max-w-[110px] md:max-w-[170px] font-semibold text-theme-primary">
               {business?.name || "Luxe Aura"}
             </span>
-            <span className="hidden md:inline-block text-[10px] px-1 py-0.5 rounded bg-theme-surface border border-theme-subtle text-theme-muted uppercase font-mono shrink-0">
+            <span className="hidden md:inline-block text-[10px] px-1.5 py-0.5 rounded bg-theme-secondary border border-theme-subtle text-amber-400 dark:text-amber-300 font-mono shrink-0 uppercase font-semibold">
               {business?.plan || "Growth"}
             </span>
             <FiChevronDown className="text-theme-muted text-xs shrink-0" />
           </button>
 
-          {/* Workspace Dropdown */}
+          {/* Workspace Switcher Dropdown */}
           {businessDropdown && (
-            <div className="absolute left-0 mt-2 w-72 max-w-[calc(100vw-1.5rem)] rounded-2xl bg-theme-card border border-theme-subtle shadow-2xl p-2 space-y-1 z-50 animate-in fade-in zoom-in-95">
+            <div className="absolute left-0 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-2xl bg-theme-card border border-theme-card shadow-2xl p-2 space-y-1 z-50 animate-in fade-in zoom-in-95">
               <div className="px-3 py-2 text-[10.5px] font-bold text-theme-muted uppercase tracking-wider border-b border-theme-subtle">
                 Switch Business Vertical Demo
               </div>
-              <div className="max-h-64 overflow-y-auto space-y-1 py-1">
+              <div className="max-h-64 overflow-y-auto space-y-1 py-1 custom-scrollbar">
                 {businesses.map((b) => (
                   <button
                     key={b.id}
@@ -208,13 +199,13 @@ export default function OSNavbar({
       {/* ====================================================================
           CENTER: Global Search Trigger (Responsive & Flex-Shrink Safe)
           ==================================================================== */}
-      <div className="hidden md:flex items-center flex-1 max-w-xs lg:max-w-md mx-2 lg:mx-4 min-w-0">
+      <div className="hidden md:flex items-center flex-1 max-w-xs lg:max-w-md mx-3 lg:mx-6 min-w-0">
         <button
           onClick={onOpenSearch}
-          className="w-full flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-theme-surface/70 hover:bg-theme-surface border border-theme-subtle text-xs text-theme-muted hover:text-theme-primary transition-all shadow-inner group cursor-pointer min-w-0"
+          className="w-full flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-theme-surface hover:bg-theme-surface-hover border border-theme-subtle text-xs text-theme-muted hover:text-theme-primary transition-all shadow-inner group cursor-pointer min-w-0"
         >
           <div className="flex items-center gap-2 min-w-0">
-            <FiSearch className="text-theme-muted group-hover:text-blue-400 transition-colors shrink-0" />
+            <FiSearch className="text-theme-muted group-hover:text-amber-400 transition-colors shrink-0" />
             <span className="truncate">Search commands, leads, services...</span>
           </div>
           <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-theme-secondary text-theme-muted border border-theme-subtle rounded shrink-0 ml-2">
@@ -225,14 +216,16 @@ export default function OSNavbar({
 
       {/* ====================================================================
           RIGHT: Actions, Notifications, Theme Toggle & Profile Avatar
-          GUARANTEED: shrink-0, ml-auto, flex items-center gap-1 sm:gap-2
-          NEVER overflows or gets clipped beyond viewport edge!
+          CRITICAL GUARANTEE:
+          - shrink-0, ml-auto
+          - Complete avatar section stays comfortably inside viewport
+          - Never clipped, hidden, or pushed outside screen at any resolution
           ==================================================================== */}
-      <div className="shrink-0 flex items-center gap-1 sm:gap-2.5 ml-auto">
+      <div className="shrink-0 flex items-center gap-1.5 sm:gap-3 ml-auto">
         {/* Mobile Search Button */}
         <button
           onClick={onOpenSearch}
-          className="md:hidden p-1.5 sm:p-2 text-theme-secondary hover:text-theme-primary rounded-xl hover:bg-theme-surface border border-theme-subtle transition-colors shrink-0"
+          className="md:hidden p-2 text-theme-secondary hover:text-theme-primary rounded-xl hover:bg-theme-surface border border-theme-subtle transition-colors shrink-0"
           title="Search"
           aria-label="Search"
         >
@@ -255,30 +248,30 @@ export default function OSNavbar({
         <div className="relative shrink-0" ref={nRef}>
           <button
             onClick={() => setNotifDropdown(!notifDropdown)}
-            className="relative p-1.5 sm:p-2 text-theme-secondary hover:text-theme-primary rounded-xl hover:bg-theme-surface border border-transparent hover:border-theme-subtle transition-colors cursor-pointer shrink-0"
+            className="relative p-2 text-theme-secondary hover:text-theme-primary rounded-xl hover:bg-theme-surface border border-transparent hover:border-theme-subtle transition-colors cursor-pointer shrink-0"
             title="Notifications"
             aria-label="Notifications"
           >
             <FiBell className="text-base" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-theme-secondary animate-pulse" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-theme-secondary animate-pulse" />
             )}
           </button>
 
           {notifDropdown && (
-            <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-1.5rem)] rounded-2xl bg-theme-card border border-theme-subtle shadow-2xl p-2 z-50 text-theme-primary animate-in fade-in zoom-in-95">
+            <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-2xl bg-theme-card border border-theme-card shadow-2xl p-2 z-50 text-theme-primary animate-in fade-in zoom-in-95">
               <div className="flex items-center justify-between px-3 py-2 border-b border-theme-subtle text-xs">
                 <span className="font-semibold text-theme-primary">Notifications ({unreadCount})</span>
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllRead}
-                    className="text-[11px] text-blue-400 hover:text-blue-300 font-medium cursor-pointer"
+                    className="text-[11px] text-amber-400 hover:text-amber-300 font-medium cursor-pointer"
                   >
                     Mark all read
                   </button>
                 )}
               </div>
-              <div className="max-h-72 overflow-y-auto divide-y divide-theme-subtle">
+              <div className="max-h-72 overflow-y-auto divide-y divide-theme-subtle custom-scrollbar">
                 {notifications.length === 0 ? (
                   <div className="p-6 text-center text-xs text-theme-muted">
                     All caught up! No notifications.
@@ -293,13 +286,13 @@ export default function OSNavbar({
                         setNotifDropdown(false);
                       }}
                       className={`p-3 text-xs cursor-pointer hover:bg-theme-surface/70 transition-colors ${
-                        !n.is_read ? "bg-blue-950/20 font-medium" : ""
+                        !n.is_read ? "bg-amber-950/20 font-medium" : ""
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="font-semibold text-theme-primary">{n.title}</span>
                         {!n.is_read && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0 mt-1" />
                         )}
                       </div>
                       <p className="text-theme-muted text-[11px] mt-1">{n.message}</p>
@@ -311,10 +304,10 @@ export default function OSNavbar({
           )}
         </div>
 
-        {/* Theme Switcher Toggle (Light vs Dark) */}
+        {/* Theme Switcher Toggle (Immediate switch between Obsidian Dark and Clean Light) */}
         <button
           onClick={toggleTheme}
-          className="p-1.5 sm:p-2 text-theme-secondary hover:text-theme-primary rounded-xl hover:bg-theme-surface border border-transparent hover:border-theme-subtle transition-colors cursor-pointer shrink-0"
+          className="p-2 text-theme-secondary hover:text-theme-primary rounded-xl hover:bg-theme-surface border border-transparent hover:border-theme-subtle transition-colors cursor-pointer shrink-0"
           title={isDark ? "Switch to Light Canvas" : "Switch to Obsidian Dark"}
           aria-label={isDark ? "Switch to Light Canvas" : "Switch to Obsidian Dark"}
         >
@@ -327,36 +320,36 @@ export default function OSNavbar({
 
         {/* ====================================================================
             PRIORITY 1 FIX: USER PROFILE AVATAR CONTAINER
-            - Always fully visible
-            - Never pushed out of viewport
-            - Initial "A" always rendered cleanly in rounded avatar circle
+            - Always fully visible inside viewport
+            - Avatar circle containing initial "A" or photo
+            - Never clipped by viewport border or overflow
             - Profile dropdown stays strictly inside viewport (right-0)
             ==================================================================== */}
         <div className="relative shrink-0" ref={pRef}>
           <button
             onClick={() => setProfileDropdown(!profileDropdown)}
-            className="flex items-center gap-1 sm:gap-2 p-1 pl-1 sm:pl-1.5 pr-1.5 sm:pr-2.5 rounded-xl bg-theme-surface/70 hover:bg-theme-surface border border-theme-subtle text-xs font-semibold text-theme-primary transition-all cursor-pointer shrink-0 shadow-sm"
+            className="flex items-center gap-1.5 sm:gap-2 p-1 pl-1.5 pr-2 sm:pr-2.5 rounded-xl bg-theme-surface hover:bg-theme-surface-hover border border-theme-subtle text-xs font-semibold text-theme-primary transition-all cursor-pointer shrink-0 shadow-sm"
             title={`Account Profile: ${user?.name || "Admin"}`}
             aria-label="User Account Menu"
           >
             {/* The Avatar Circle: Always Shows "A" or User Initial with High Contrast */}
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-sm shrink-0 border border-blue-400/40 relative select-none">
+            <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-tr from-blue-600 via-indigo-600 to-amber-500 text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-md shrink-0 border border-blue-400/40 relative select-none">
               {user?.avatar && (
                 <img
                   src={user.avatar}
                   alt={user.name || "User Avatar"}
-                  className="w-full h-full object-cover absolute inset-0"
+                  className="w-full h-full object-cover absolute inset-0 rounded-full"
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
                   }}
                 />
               )}
               {/* Fallback Initial "A" is always present */}
-              <span>{userInitial}</span>
+              <span className="font-extrabold tracking-tight">{userInitial}</span>
             </div>
 
-            {/* User Name (Responsive: visible on desktop, hidden on mobile/tablet) */}
-            <span className="hidden xl:inline-block font-semibold text-theme-primary max-w-[85px] truncate">
+            {/* User Name */}
+            <span className="hidden xl:inline-block font-semibold text-theme-primary max-w-[90px] truncate">
               {user?.name?.split(" ")[0] || "Admin"}
             </span>
             <FiChevronDown className="text-theme-muted text-xs shrink-0" />
@@ -364,10 +357,10 @@ export default function OSNavbar({
 
           {/* User Profile Dropdown Menu */}
           {profileDropdown && (
-            <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-1.5rem)] rounded-2xl bg-theme-card border border-theme-subtle shadow-2xl p-2 z-50 text-theme-primary space-y-1 animate-in fade-in zoom-in-95">
+            <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] rounded-2xl bg-theme-card border border-theme-card shadow-2xl p-2 z-50 text-theme-primary space-y-1 animate-in fade-in zoom-in-95">
               <div className="px-3 py-2.5 border-b border-theme-subtle">
                 <div className="flex items-center gap-2.5 mb-1.5">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-sm shrink-0 border border-blue-400/40">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-amber-500 text-white font-bold flex items-center justify-center text-sm shrink-0 border border-blue-400/40">
                     <span>{userInitial}</span>
                   </div>
                   <div className="min-w-0">
@@ -383,7 +376,7 @@ export default function OSNavbar({
                   <span className="px-1.5 py-0.5 rounded bg-blue-900/40 text-blue-400 text-[10px] font-mono uppercase font-bold border border-blue-800/40">
                     {user?.role || "Owner"}
                   </span>
-                  <span className="px-1.5 py-0.5 rounded bg-emerald-900/40 text-emerald-400 text-[10px] font-mono uppercase font-bold border border-emerald-800/40">
+                  <span className="px-1.5 py-0.5 rounded bg-amber-950/40 text-amber-300 text-[10px] font-mono uppercase font-bold border border-amber-800/40">
                     {business?.plan || "Growth"} Tier
                   </span>
                 </div>
