@@ -1,6 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiSearch, FiX, FiArrowRight, FiCommand, FiUser, FiCalendar, FiCoffee, FiScissors, FiCpu, FiLayers } from "react-icons/fi";
+import {
+  FiSearch,
+  FiX,
+  FiArrowRight,
+  FiCommand,
+  FiUser,
+  FiCalendar,
+  FiCoffee,
+  FiScissors,
+  FiCpu,
+  FiLayers,
+} from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 
 export default function GlobalSearch({ isOpen, onClose }) {
@@ -72,12 +83,12 @@ export default function GlobalSearch({ isOpen, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4 bg-black/70 backdrop-blur-md transition-opacity">
       <div
-        className="w-full max-w-2xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden text-slate-100 flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150"
+        className="w-full max-w-2xl bg-theme-card border border-theme-subtle rounded-2xl shadow-2xl overflow-hidden text-theme-primary flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-slate-800 bg-slate-950/60">
-          <FiSearch className="text-slate-400 text-xl mr-3" />
+        <div className="flex items-center px-4 py-3.5 border-b border-theme-subtle bg-theme-surface/70">
+          <FiSearch className="text-theme-muted text-xl mr-3" />
           <input
             ref={inputRef}
             type="text"
@@ -87,17 +98,17 @@ export default function GlobalSearch({ isOpen, onClose }) {
               setSelectedIndex(0);
             }}
             placeholder="Search commands, modules, leads, services, tables..."
-            className="w-full bg-transparent text-base text-white placeholder-slate-500 focus:outline-none"
+            className="w-full bg-transparent text-base text-theme-primary placeholder-theme-muted focus:outline-none"
           />
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="p-1 text-slate-400 hover:text-white rounded-lg transition-colors mr-2"
+              className="p-1 text-theme-muted hover:text-theme-primary rounded-lg transition-colors mr-2 cursor-pointer"
             >
               <FiX className="text-lg" />
             </button>
           )}
-          <span className="flex items-center text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded border border-slate-700">
+          <span className="flex items-center text-xs text-theme-muted bg-theme-surface px-2 py-1 rounded border border-theme-subtle">
             <FiCommand className="mr-1" /> ESC
           </span>
         </div>
@@ -105,7 +116,7 @@ export default function GlobalSearch({ isOpen, onClose }) {
         {/* Results List */}
         <div className="overflow-y-auto p-2 space-y-1">
           {filtered.length === 0 ? (
-            <div className="p-8 text-center text-slate-400">
+            <div className="p-8 text-center text-theme-muted">
               <p className="text-sm">No matching records or actions found for "{query}".</p>
             </div>
           ) : (
@@ -122,26 +133,26 @@ export default function GlobalSearch({ isOpen, onClose }) {
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all ${
                     isSelected
-                      ? "bg-blue-600/20 border border-blue-500/40 text-white"
-                      : "hover:bg-slate-800/60 text-slate-200 border border-transparent"
+                      ? "bg-blue-600/20 border border-blue-500/40 text-theme-primary"
+                      : "hover:bg-theme-surface/60 text-theme-secondary border border-transparent"
                   }`}
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center gap-3">
                     <div
                       className={`p-2 rounded-lg ${
-                        isSelected ? "bg-blue-600 text-white" : "bg-slate-800 text-slate-300"
+                        isSelected ? "bg-blue-600 text-white" : "bg-theme-surface text-theme-secondary"
                       }`}
                     >
                       <Icon className="text-base" />
                     </div>
                     <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-semibold text-sm">{item.title}</span>
-                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-slate-800 text-slate-400">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-theme-primary">{item.title}</span>
+                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-theme-surface text-theme-muted border border-theme-subtle">
                           {item.category}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 mt-0.5">{item.desc}</p>
+                      <p className="text-xs text-theme-muted mt-0.5">{item.desc}</p>
                     </div>
                   </div>
                   {isSelected && <FiArrowRight className="text-blue-400 text-base" />}
@@ -152,13 +163,13 @@ export default function GlobalSearch({ isOpen, onClose }) {
         </div>
 
         {/* Footer shortcuts */}
-        <div className="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
-          <div className="flex items-center space-x-3">
+        <div className="px-4 py-2.5 bg-theme-surface/60 border-t border-theme-subtle flex items-center justify-between text-xs text-theme-muted">
+          <div className="flex items-center gap-3">
             <span>↑↓ Navigate</span>
             <span>↵ Select</span>
             <span>ESC Close</span>
           </div>
-          <span className="text-[11px] font-medium text-slate-400">Zynthor Business OS</span>
+          <span className="text-[11px] font-medium text-theme-muted">Zynthor Business OS</span>
         </div>
       </div>
     </div>

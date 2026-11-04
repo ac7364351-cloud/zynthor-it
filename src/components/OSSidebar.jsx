@@ -11,10 +11,18 @@ import {
   FiCreditCard,
   FiExternalLink,
   FiCalendar,
+  FiChevronLeft,
+  FiChevronRight,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import ZynthorLogo from "./Brand/ZynthorLogo";
 
-export default function OSSidebar({ isOpen, onClose }) {
+export default function OSSidebar({
+  isOpen,
+  onClose,
+  isCollapsed = false,
+  onToggleCollapse,
+}) {
   const location = useLocation();
   const { business } = useAuth();
 
@@ -35,8 +43,18 @@ export default function OSSidebar({ isOpen, onClose }) {
     {
       group: "Vertical Suites",
       items: [
-        { label: "Salon & Spa Suite", path: "/app/salon", icon: FiScissors, badge: business?.industry === "salon" ? "Active" : null },
-        { label: "Cafe & Restaurant", path: "/app/cafe", icon: FiCoffee, badge: business?.industry === "cafe" ? "Active" : null },
+        {
+          label: "Salon & Spa Suite",
+          path: "/app/salon",
+          icon: FiScissors,
+          badge: business?.industry === "salon" ? "Active" : null,
+        },
+        {
+          label: "Cafe & Restaurant",
+          path: "/app/cafe",
+          icon: FiCoffee,
+          badge: business?.industry === "cafe" ? "Active" : null,
+        },
       ],
     },
     {
@@ -56,29 +74,80 @@ export default function OSSidebar({ isOpen, onClose }) {
     },
   ];
 
+  const sidebarWidth = isCollapsed ? "lg:w-20" : "lg:w-64";
+
   return (
     <>
       {/* Mobile Backdrop */}
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden transition-opacity"
         />
       )}
 
       <aside
-        className={`fixed top-16 bottom-0 left-0 z-30 w-64 border-r border-slate-800/80 bg-slate-950/95 lg:bg-slate-950/60 backdrop-blur-xl flex flex-col justify-between transition-transform duration-200 ease-in-out lg:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-16 bottom-0 left-0 z-30 border-r border-theme-subtle bg-theme-secondary/95 backdrop-blur-xl flex flex-col justify-between transition-all duration-200 ease-in-out ${
+          isOpen ? "translate-x-0 w-72" : "-translate-x-full lg:translate-x-0"
+        } ${sidebarWidth}`}
       >
+        {/* Top Branding Section (Occupies full width of sidebar container) */}
+        <div className="px-3.5 py-4 border-b border-theme-subtle flex items-center justify-between min-h-[64px] bg-theme-secondary">
+          <Link
+            to="/app"
+            onClick={onClose}
+            className={`flex items-center overflow-hidden transition-all ${
+              isCollapsed ? "justify-center w-full" : "w-full"
+            }`}
+            title="Zynthor Business OS"
+          >
+            <ZynthorLogo
+              size={isCollapsed ? "sm" : "md"}
+              collapsed={isCollapsed}
+              badgeText="OS"
+            />
+          </Link>
+
+          {/* Desktop Collapse / Expand Toggle Button */}
+          {!isCollapsed && onToggleCollapse && (
+            <button
+              onClick={onToggleCollapse}
+              className="hidden lg:flex items-center justify-center p-1.5 rounded-lg text-theme-muted hover:text-theme-primary hover:bg-theme-surface border border-theme-subtle transition-colors cursor-pointer shrink-0 ml-1"
+              title="Collapse Sidebar"
+              aria-label="Collapse Sidebar"
+            >
+              <FiChevronLeft className="text-sm" />
+            </button>
+          )}
+        </div>
+
+        {/* Collapsed Mode Expand Button */}
+        {isCollapsed && onToggleCollapse && (
+          <div className="hidden lg:flex justify-center py-2 border-b border-theme-subtle bg-theme-surface/40">
+            <button
+              onClick={onToggleCollapse}
+              className="p-1.5 rounded-lg text-theme-muted hover:text-theme-primary hover:bg-theme-surface border border-theme-subtle transition-colors cursor-pointer"
+              title="Expand Sidebar"
+              aria-label="Expand Sidebar"
+            >
+              <FiChevronRight className="text-sm" />
+            </button>
+          </div>
+        )}
+
         {/* Navigation items list */}
-        <div className="overflow-y-auto px-4 py-4 space-y-6 flex-1">
+        <div className="overflow-y-auto px-2.5 py-3 space-y-5 flex-1">
           {navGroups.map((grp) => (
             <div key={grp.group} className="space-y-1">
-              <div className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                {grp.group}
-              </div>
-              <div className="space-y-0.5 pt-1">
+              {!isCollapsed && (
+                <div className="px-2.5 text-[10.5px] font-bold uppercase tracking-wider text-theme-muted">
+                  {grp.group}
+                </div>
+              )}
+              {isCollapsed && (
+                <div className="h-2 border-t border-theme-subtle mx-1 my-1 opacity-50" />
+              )}
+              <div className="space-y-0.5 pt-0.5">
                 {grp.items.map((item) => {
                   const Icon = item.icon;
                   const active = isCurrent(item.path);
@@ -87,22 +156,27 @@ export default function OSSidebar({ isOpen, onClose }) {
                       key={item.path}
                       to={item.path}
                       onClick={onClose}
-                      className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                      title={isCollapsed ? item.label : undefined}
+                      className={`flex items-center rounded-xl text-xs font-semibold transition-all ${
+                        isCollapsed ? "justify-center p-2.5" : "justify-between px-3 py-2"
+                      } ${
                         active
-                          ? "bg-gradient-to-r from-blue-600/30 to-indigo-600/20 text-white border border-blue-500/40 shadow-sm"
-                          : "text-slate-300 hover:text-white hover:bg-slate-900/80"
+                          ? "bg-gradient-to-r from-blue-600/25 to-indigo-600/20 text-blue-400 border border-blue-500/40 shadow-sm"
+                          : "text-theme-secondary hover:text-theme-primary hover:bg-theme-surface"
                       }`}
                     >
-                      <div className="flex items-center space-x-2.5">
+                      <div className="flex items-center gap-2.5 min-w-0">
                         <Icon
-                          className={`text-base ${
-                            active ? "text-blue-400" : "text-slate-400 group-hover:text-slate-300"
+                          className={`text-base shrink-0 ${
+                            active ? "text-blue-400" : "text-theme-muted"
                           }`}
                         />
-                        <span>{item.label}</span>
+                        {!isCollapsed && (
+                          <span className="truncate">{item.label}</span>
+                        )}
                       </div>
-                      {item.badge && (
-                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-800/50">
+                      {!isCollapsed && item.badge && (
+                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-950/60 text-blue-400 border border-blue-800/40 shrink-0">
                           {item.badge}
                         </span>
                       )}
@@ -115,33 +189,41 @@ export default function OSSidebar({ isOpen, onClose }) {
         </div>
 
         {/* Bottom Client Portal Shortcuts */}
-        <div className="p-4 border-t border-slate-800/80 bg-slate-950/80 space-y-2">
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-1">
-            Live Customer Portals
-          </div>
+        <div className="p-3 border-t border-theme-subtle bg-theme-secondary space-y-2">
+          {!isCollapsed && (
+            <div className="text-[10.5px] font-bold text-theme-muted uppercase tracking-wider px-1">
+              Live Customer Portals
+            </div>
+          )}
           <div className="space-y-1">
             <Link
               to={business?.industry === "salon" ? `/book/${business.slug}` : "/book/luxe-aura"}
               target="_blank"
-              className="flex items-center justify-between p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-colors"
+              title="Salon Booking Portal"
+              className={`flex items-center rounded-xl bg-theme-surface/70 hover:bg-theme-surface border border-theme-subtle text-xs text-theme-secondary hover:text-theme-primary transition-colors ${
+                isCollapsed ? "justify-center p-2.5" : "justify-between p-2"
+              }`}
             >
-              <div className="flex items-center space-x-2">
-                <FiCalendar className="text-pink-400" />
-                <span className="font-medium">Salon Booking Portal</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <FiCalendar className="text-pink-400 shrink-0" />
+                {!isCollapsed && <span className="font-medium truncate">Salon Portal</span>}
               </div>
-              <FiExternalLink className="text-slate-400 text-xs" />
+              {!isCollapsed && <FiExternalLink className="text-theme-muted text-xs shrink-0" />}
             </Link>
 
             <Link
               to={business?.industry === "cafe" ? `/menu/${business.slug}` : "/menu/velvet-vine"}
               target="_blank"
-              className="flex items-center justify-between p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-colors"
+              title="Digital QR Menu"
+              className={`flex items-center rounded-xl bg-theme-surface/70 hover:bg-theme-surface border border-theme-subtle text-xs text-theme-secondary hover:text-theme-primary transition-colors ${
+                isCollapsed ? "justify-center p-2.5" : "justify-between p-2"
+              }`}
             >
-              <div className="flex items-center space-x-2">
-                <FiCoffee className="text-amber-400" />
-                <span className="font-medium">Digital QR Menu</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <FiCoffee className="text-amber-400 shrink-0" />
+                {!isCollapsed && <span className="font-medium truncate">Digital QR Menu</span>}
               </div>
-              <FiExternalLink className="text-slate-400 text-xs" />
+              {!isCollapsed && <FiExternalLink className="text-theme-muted text-xs shrink-0" />}
             </Link>
           </div>
         </div>

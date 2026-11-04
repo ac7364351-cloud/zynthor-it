@@ -8,10 +8,25 @@ import { useAuth } from "../context/AuthContext";
 
 export default function BusinessOSLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("zynthor_sidebar_collapsed") === "true";
+    }
+    return false;
+  });
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [quickActionOpen, setQuickActionOpen] = useState(false);
   const location = useLocation();
   const { business } = useAuth();
+
+  const toggleSidebarCollapse = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("zynthor_sidebar_collapsed", String(next));
+      return next;
+    });
+  };
 
   // Dynamic Page Title
   useEffect(() => {
@@ -45,20 +60,31 @@ export default function BusinessOSLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white transition-colors duration-150">
-      {/* Top Navigation */}
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-theme-main text-theme-primary flex flex-col font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
+      {/* Top Navigation Bar */}
       <OSNavbar
         onOpenSearch={() => setSearchOpen(true)}
         onOpenQuickAction={() => setQuickActionOpen(true)}
-        onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+        isSidebarCollapsed={sidebarCollapsed}
+        onToggleCollapse={toggleSidebarCollapse}
       />
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Persistent & Responsive Sidebar */}
-        <OSSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <div className="flex-1 w-full max-w-full flex overflow-hidden relative">
+        {/* Persistent & Responsive Collapsible Sidebar */}
+        <OSSidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={toggleSidebarCollapse}
+        />
 
-        {/* Main Content Area */}
-        <main className="flex-1 lg:pl-64 overflow-y-auto min-h-[calc(100vh-4rem)] p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-slate-950 via-slate-950/95 to-slate-900/60">
+        {/* Main Content Area — Automatically adapts to sidebar width */}
+        <main
+          className={`flex-1 w-full max-w-full overflow-x-hidden min-h-[calc(100vh-4rem)] p-3 sm:p-6 lg:p-8 bg-theme-main transition-[padding] duration-200 ease-in-out ${
+            sidebarCollapsed ? "lg:pl-20" : "lg:pl-64"
+          }`}
+        >
           <Outlet />
         </main>
       </div>

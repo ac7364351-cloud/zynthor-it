@@ -1,0 +1,33 @@
+<svg width="240" height="48" viewBox="0 0 240 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="zynthorFullGrad" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="circuitFullGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#60a5fa" stop-opacity="0.4" />
+    </linearGradient>
+  </defs>
+
+  <!-- 100% Transparent Background - Circuit Shield Emblem -->
+  <g transform="translate(0, 0)">
+    <rect x="2" y="2" width="44" height="44" rx="12" fill="none" stroke="url(#circuitFullGrad)" stroke-width="1.75" />
+    <path d="M9 14 L18 14 L21 17" stroke="url(#circuitFullGrad)" stroke-width="1.5" stroke-linecap="round" />
+    <circle cx="9" cy="14" r="2" fill="#38bdf8" />
+    <path d="M39 34 L30 34 L27 31" stroke="url(#circuitFullGrad)" stroke-width="1.5" stroke-linecap="round" />
+    <circle cx="39" cy="34" r="2" fill="#38bdf8" />
+    <path d="M14 12 H36 L33 18 H20 L14 12Z" fill="url(#zynthorFullGrad)" />
+    <path d="M34 16 L17 33 H26 L37 19 L34 16Z" fill="#ffffff" />
+    <path d="M12 36 L15 30 H29 L35 36 H12Z" fill="url(#zynthorFullGrad)" />
+    <circle cx="24" cy="24" r="2" fill="#38bdf8" />
+  </g>
+
+  <!-- Typography: ZYNTHOR -->
+  <text x="56" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="-0.02em" fill="#38bdf8">ZYNTHOR</text>
+  
+  <!-- Sub-badge: BUSINESS OS -->
+  <rect x="56" y="32" width="86" height="13" rx="3.5" fill="#1e293b" fill-opacity="0.7" stroke="#3b82f6" stroke-width="0.75" stroke-opacity="0.5" />
+  <text x="61" y="41.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="8" font-weight="700" letter-spacing="0.12em" fill="#93c5fd">BUSINESS OS</text>
+</svg>

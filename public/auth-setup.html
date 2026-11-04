@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Auth Setup</title>
+</head>
+<body style="background: #0b1020; color: white; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh;">
+  <p>Configuring environment...</p>
+  <script>
+    (async function() {
+      const params = new URLSearchParams(window.location.search);
+      const theme = params.get('theme') || 'dark';
+      const collapsed = params.get('collapsed') === 'true';
+      const route = params.get('route') || '/app';
+      const initial = params.get('initial');
+      const industry = params.get('industry');
+
+      // Determine user credentials
+      let email = 'admin@zynthor.com';
+      let pass = 'Admin@123';
+
+      if (industry === 'salon') {
+        email = 'elena@luxeaura.com';
+        pass = 'Demo@123';
+      } else if (industry === 'cafe') {
+        email = 'chefarjun@velvetvine.com';
+        pass = 'Demo@123';
+      }
+
+      try {
+        const res = await fetch('http://localhost:8000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, password: pass })
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem('zynthor_token', data.token);
+          const u = data.user;
+          if (initial === 'A' && !u.name.startsWith('A')) {
+            u.name = 'Admin ' + u.name;
+          }
+          localStorage.setItem('zynthor_user', JSON.stringify(u));
+          localStorage.setItem('zynthor_business', JSON.stringify(data.business));
+          localStorage.setItem('zynthor_theme', theme);
+          localStorage.setItem('zynthor_sidebar_collapsed', String(collapsed));
+
+          // Set html class
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          }
+
+          // Small delay then redirect
+          setTimeout(() => {
+            window.location.replace(route);
+          }, 100);
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      window.location.replace(route);
+    })();
+  </script>
+</body>
+</html>

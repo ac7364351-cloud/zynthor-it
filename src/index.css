@@ -1,29 +1,206 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   ZYNTHOR BUSINESS OS — DESIGN TOKENS & SURFACES
+   Obsidian Luxury + Modern Glass + Clean Professional High-Contrast SaaS
+   ========================================================================== */
+
 :root {
+  /* Light Mode Palette */
+  --bg-main: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-surface: #f1f5f9;
+  --bg-surface-hover: #e2e8f0;
+  --border-subtle: #e2e8f0;
+  --border-card: #cbd5e1;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --highlight: #d97706;
+  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --header-glass: rgba(255, 255, 255, 0.85);
+  --sidebar-glass: rgba(255, 255, 255, 0.95);
+  color-scheme: light;
+}
+
+html.dark {
+  /* Dark Mode Palette — Obsidian Luxury */
+  --bg-main: #0b1020;
+  --bg-secondary: #111827;
+  --bg-card: #172033;
+  --bg-surface: #1e293b;
+  --bg-surface-hover: #243248;
+  --border-subtle: #1e293b;
+  --border-card: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --accent: #6366f1;
+  --accent-hover: #4f46e5;
+  --highlight: #f59e0b;
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 4px 10px -2px rgba(0, 0, 0, 0.4);
+  --header-glass: rgba(17, 24, 39, 0.85);
+  --sidebar-glass: rgba(17, 24, 39, 0.95);
   color-scheme: dark;
 }
 
 html {
-  /* Scroll behavior is managed programmatically via scrollIntoView({ behavior: 'smooth' }) to prevent refresh jump bugs */
   text-size-adjust: 100%;
+  box-sizing: border-box;
 }
 
-html.light {
-  color-scheme: light;
-}
-
-html.light body {
-  background: #f8fafc;
-  color: #0f172a;
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #020617;
-  color: #f8fafc;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ==========================================================================
+   THEME HELPER UTILITIES
+   ========================================================================== */
+
+.bg-theme-main {
+  background-color: var(--bg-main) !important;
+}
+
+.bg-theme-secondary {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-theme-card {
+  background-color: var(--bg-card) !important;
+  box-shadow: var(--card-shadow);
+}
+
+.bg-theme-surface {
+  background-color: var(--bg-surface) !important;
+}
+
+.hover\:bg-theme-surface-hover:hover {
+  background-color: var(--bg-surface-hover) !important;
+}
+
+.border-theme-subtle {
+  border-color: var(--border-subtle) !important;
+}
+
+.border-theme-card {
+  border-color: var(--border-card) !important;
+}
+
+.text-theme-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-theme-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-theme-muted {
+  color: var(--text-muted) !important;
+}
+
+/* ==========================================================================
+   DARK MODE OBSIDIAN LUXURY OVERRIDES
+   Guarantees distinct, elevated surfaces across all components
+   ========================================================================== */
+
+html.dark .bg-slate-900,
+html.dark .bg-slate-900\/70,
+html.dark .bg-slate-900\/80,
+html.dark .bg-slate-900\/90 {
+  background-color: var(--bg-card) !important;
+}
+
+html.dark .bg-slate-950,
+html.dark .bg-slate-950\/60,
+html.dark .bg-slate-950\/80,
+html.dark .bg-slate-950\/90,
+html.dark .bg-slate-950\/95 {
+  background-color: var(--bg-surface) !important;
+}
+
+html.dark .border-slate-800,
+html.dark .border-slate-800\/60,
+html.dark .border-slate-800\/80 {
+  border-color: var(--border-card) !important;
+}
+
+html.dark .border-slate-700,
+html.dark .border-slate-700\/80 {
+  border-color: var(--border-subtle) !important;
+}
+
+/* ==========================================================================
+   LIGHT MODE CONTRAST OVERRIDES
+   Guarantees clean, high-contrast crisp surfaces on light canvas
+   ========================================================================== */
+
+html.light .bg-slate-900,
+html.light .bg-slate-900\/70,
+html.light .bg-slate-900\/80,
+html.light .bg-slate-900\/90 {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-slate-950,
+html.light .bg-slate-950\/60,
+html.light .bg-slate-950\/80,
+html.light .bg-slate-950\/90,
+html.light .bg-slate-950\/95 {
+  background-color: #f1f5f9 !important;
+}
+
+html.light .border-slate-800,
+html.light .border-slate-800\/60,
+html.light .border-slate-800\/80,
+html.light .border-slate-700,
+html.light .border-slate-700\/80 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Ensure text inside cards is dark in light mode, but primary buttons remain white */
+html.light h1.text-white,
+html.light h2.text-white,
+html.light h3.text-white,
+html.light td .text-white,
+html.light th .text-white,
+html.light .font-bold.text-white:not(.btn-primary *):not([class*="bg-blue"]):not([class*="bg-purple"]):not([class*="bg-emerald"]),
+html.light .font-semibold.text-white:not(.btn-primary *):not([class*="bg-blue"]):not([class*="bg-purple"]):not([class*="bg-emerald"]) {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-100:not([class*="bg-blue"]):not([class*="bg-purple"]) {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-200:not([class*="bg-blue"]):not([class*="bg-purple"]),
+html.light .text-slate-300:not([class*="bg-blue"]):not([class*="bg-purple"]) {
+  color: #334155 !important;
+}
+
+html.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+/* Keep primary buttons crisp white in light mode */
+html.light [class*="bg-blue-600"],
+html.light [class*="bg-purple-600"],
+html.light [class*="bg-emerald-600"],
+html.light [class*="bg-indigo-600"] {
+  color: #ffffff !important;
 }
 
 /* Custom Sleek Scrollbar */
@@ -32,14 +209,15 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--bg-surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 0.8);
+  background: var(--text-muted);
+  opacity: 0.5;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(71, 85, 105, 1);
+  opacity: 0.8;
 }
 
 @media (prefers-reduced-motion: reduce) {
