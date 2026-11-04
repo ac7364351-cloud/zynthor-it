@@ -111,7 +111,7 @@ export default function DashboardPage() {
             <span>Sync</span>
           </button>
           <Link
-            to="/app/leads"
+            to="/leads"
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 transition-all cursor-pointer shrink-0"
           >
             <FiPlus className="text-sm shrink-0" />
@@ -208,7 +208,7 @@ export default function DashboardPage() {
                 <p className="text-xs text-theme-muted">Strictly authorized tenant lead records</p>
               </div>
               <Link
-                to="/app/leads"
+                to="/leads"
                 className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1"
               >
                 <span>View Full CRM</span>
@@ -329,7 +329,7 @@ export default function DashboardPage() {
 
           <div className="pt-4 border-t border-theme-subtle mt-4">
             <Link
-              to="/app/ai-bot"
+              to="/ai-bot"
               className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-gradient-to-r from-blue-600/20 to-indigo-600/20 hover:from-blue-600/30 hover:to-indigo-600/30 text-blue-400 border border-blue-500/30 text-xs font-semibold transition-all"
             >
               <span>Ask AI Copilot to summarize activities</span>

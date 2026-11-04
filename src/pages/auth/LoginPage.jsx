@@ -30,7 +30,7 @@ export default function LoginPage() {
     setError(null);
     try {
       await login(email, password);
-      navigate("/app");
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Invalid credentials.");
     } finally {
@@ -44,7 +44,7 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     login(demoEmail, demoPass)
-      .then(() => navigate("/app"))
+      .then(() => navigate("/dashboard"))
       .catch((err) => setError(err.message || "Failed to log in"))
       .finally(() => setLoading(false));
   };
@@ -177,7 +177,7 @@ export default function LoginPage() {
           <span>Need to register a new establishment? </span>
           <button
             type="button"
-            onClick={() => navigate("/app/onboarding")}
+            onClick={() => navigate("/onboarding")}
             className="text-blue-400 hover:text-blue-300 font-semibold cursor-pointer"
           >
             Launch Setup Wizard

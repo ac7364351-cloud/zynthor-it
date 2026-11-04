@@ -14,6 +14,8 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiLogOut,
+  FiShield,
+  FiEdit3,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import ZynthorLogo from "./Brand/ZynthorLogo";
@@ -29,17 +31,37 @@ export default function OSSidebar({
   const { user, business, logout } = useAuth();
 
   const isCurrent = (path) => {
-    if (path === "/app") return location.pathname === "/app";
-    return location.pathname.startsWith(path);
+    if (path === "/dashboard") {
+      return (
+        location.pathname === "/" ||
+        location.pathname === "/dashboard" ||
+        location.pathname === "/app" ||
+        location.pathname === "/business"
+      );
+    }
+    if (path === "/admin") {
+      return (
+        location.pathname === "/admin" ||
+        location.pathname === "/app/admin" ||
+        location.pathname === "/business-management" ||
+        location.pathname === "/app/business-management"
+      );
+    }
+    return (
+      location.pathname === path ||
+      location.pathname === `/app${path}` ||
+      location.pathname.startsWith(`${path}/`) ||
+      location.pathname.startsWith(`/app${path}/`)
+    );
   };
 
   const navGroups = [
     {
       group: "Core Workspace",
       items: [
-        { label: "Dashboard", path: "/app", icon: FiGrid },
-        { label: "Inbound Leads", path: "/app/leads", icon: FiUsers },
-        { label: "Customer Directory", path: "/app/customers", icon: FiUsers },
+        { label: "Dashboard", path: "/dashboard", icon: FiGrid },
+        { label: "Inbound Leads & CRM", path: "/leads", icon: FiUsers },
+        { label: "Customer Directory", path: "/customers", icon: FiUsers },
       ],
     },
     {
@@ -47,31 +69,43 @@ export default function OSSidebar({
       items: [
         {
           label: "Salon & Spa Suite",
-          path: "/app/salon",
+          path: "/salon",
           icon: FiScissors,
           badge: business?.industry === "salon" ? "Active" : null,
         },
         {
           label: "Cafe & Restaurant",
-          path: "/app/cafe",
+          path: "/cafe",
           icon: FiCoffee,
           badge: business?.industry === "cafe" ? "Active" : null,
         },
       ],
     },
     {
+      group: "Administration",
+      items: [
+        {
+          label: "Super Admin & Tenants",
+          path: "/admin",
+          icon: FiShield,
+          badge: user?.role === "owner" || user?.role === "admin" ? "Admin" : null,
+        },
+      ],
+    },
+    {
       group: "Intelligence",
       items: [
-        { label: "Zynthor AI Copilot", path: "/app/ai-bot", icon: FiCpu, badge: "AI" },
-        { label: "Automation Rules", path: "/app/automation", icon: FiZap },
-        { label: "Analytics & Reports", path: "/app/reports", icon: FiBarChart2 },
+        { label: "Zynthor AI Copilot", path: "/ai-bot", icon: FiCpu, badge: "AI" },
+        { label: "Automation Rules", path: "/automation", icon: FiZap },
+        { label: "Analytics & Reports", path: "/reports", icon: FiBarChart2 },
       ],
     },
     {
       group: "Organization",
       items: [
-        { label: "Settings & Team", path: "/app/settings", icon: FiSettings },
-        { label: "Plans & Limits", path: "/app/plans", icon: FiCreditCard },
+        { label: "Brand & Website Editor", path: "/brand-editor", icon: FiEdit3 },
+        { label: "Settings & Team", path: "/settings", icon: FiSettings },
+        { label: "Plans & Invoices", path: "/plans", icon: FiCreditCard },
       ],
     },
   ];
@@ -109,7 +143,7 @@ export default function OSSidebar({
         {/* Top Branding Section (Occupies full intended width of sidebar container) */}
         <div className="h-16 px-3.5 border-b border-theme-subtle flex items-center justify-between bg-theme-sidebar shrink-0">
           <Link
-            to="/app"
+            to="/dashboard"
             onClick={onClose}
             className={`flex items-center overflow-hidden transition-all ${
               isCollapsed ? "justify-center w-full" : "w-full"

@@ -53,6 +53,7 @@ export const api = {
   markNotificationRead: (id) => request(`/api/notifications/${id}/read`, { method: "PUT" }),
   markAllNotificationsRead: () => request("/api/notifications/read-all", { method: "PUT" }),
   getActivities: () => request("/api/activities"),
+  getBusinesses: () => request("/api/businesses"),
 
   // 2. Leads & CRM
   getLeads: (status, search) => {

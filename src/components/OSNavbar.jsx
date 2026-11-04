@@ -122,7 +122,7 @@ export default function OSNavbar({
 
         {/* Mobile-only Brand Logo Link (Desktop logo is already permanently in sidebar) */}
         <Link
-          to="/app"
+          to="/dashboard"
           className="lg:hidden flex items-center shrink-0 overflow-hidden"
           title="Zynthor Business OS"
         >
@@ -183,7 +183,7 @@ export default function OSNavbar({
               </div>
               <div className="pt-2 border-t border-theme-subtle">
                 <Link
-                  to="/app/onboarding"
+                  to="/onboarding"
                   onClick={() => setBusinessDropdown(false)}
                   className="flex items-center gap-2 p-2 rounded-xl text-xs text-blue-400 hover:bg-blue-950/40 font-medium transition-colors"
                 >
@@ -383,7 +383,7 @@ export default function OSNavbar({
               </div>
 
               <Link
-                to="/app/settings"
+                to="/settings"
                 onClick={() => setProfileDropdown(false)}
                 className="flex items-center gap-2.5 p-2 rounded-xl text-xs text-theme-secondary hover:text-theme-primary hover:bg-theme-surface transition-colors"
               >
@@ -392,7 +392,7 @@ export default function OSNavbar({
               </Link>
 
               <Link
-                to="/app/plans"
+                to="/plans"
                 onClick={() => setProfileDropdown(false)}
                 className="flex items-center gap-2.5 p-2 rounded-xl text-xs text-theme-secondary hover:text-theme-primary hover:bg-theme-surface transition-colors"
               >
@@ -401,7 +401,7 @@ export default function OSNavbar({
               </Link>
 
               <Link
-                to="/"
+                to="/website"
                 target="_blank"
                 onClick={() => setProfileDropdown(false)}
                 className="flex items-center gap-2.5 p-2 rounded-xl text-xs text-theme-secondary hover:text-theme-primary hover:bg-theme-surface transition-colors"
