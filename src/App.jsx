@@ -102,15 +102,77 @@ function App() {
 
           <Routes>
             {/* ==========================================================
-                1. PRIMARY SAAS APPLICATION ENTRY & AUTHENTICATION
-                Root '/' always opens the SaaS software, never a marketing site.
+                1. ZYNTHOR IT PUBLIC MARKETING WEBSITE (ROOT '/')
+                The corporate and technology agency website with Business OS showcase.
                 ========================================================== */}
-            <Route path="/" element={<AppEntry />} />
+            <Route element={<MarketingLayout onOpenQuote={handleOpenQuote} />}>
+              <Route
+                path="/"
+                element={
+                  <HomePage
+                    selectedService={selectedService}
+                    onSelectPackage={handleSelectPackage}
+                    onOpenQuote={handleOpenQuote}
+                  />
+                }
+              />
+              <Route path="/products/business-os" element={<ProductBusinessOSPage />} />
+              <Route
+                path="/pricing"
+                element={<PricingPage onSelectPackage={handleSelectPackage} />}
+              />
+              <Route path="/book-demo" element={<BookDemoPage />} />
+              <Route
+                path="/services"
+                element={<ServicesPage onSelectPackage={handleSelectPackage} />}
+              />
+              <Route path="/portfolio" element={<PortfolioPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route
+                path="/contact"
+                element={<ContactPage selectedService={selectedService} />}
+              />
+
+              {/* Backward compatibility for /website routes */}
+              <Route
+                path="/website"
+                element={
+                  <HomePage
+                    selectedService={selectedService}
+                    onSelectPackage={handleSelectPackage}
+                    onOpenQuote={handleOpenQuote}
+                  />
+                }
+              />
+              <Route path="/website/products/business-os" element={<ProductBusinessOSPage />} />
+              <Route
+                path="/website/pricing"
+                element={<PricingPage onSelectPackage={handleSelectPackage} />}
+              />
+              <Route path="/website/book-demo" element={<BookDemoPage />} />
+              <Route
+                path="/website/services"
+                element={<ServicesPage onSelectPackage={handleSelectPackage} />}
+              />
+              <Route path="/website/portfolio" element={<PortfolioPage />} />
+              <Route path="/website/about" element={<AboutPage />} />
+              <Route
+                path="/website/contact"
+                element={<ContactPage selectedService={selectedService} />}
+              />
+            </Route>
+
+            {/* ==========================================================
+                2. PRIMARY SAAS APPLICATION ENTRY & AUTHENTICATION
+                Dedicated SaaS software portal with isolated auth & dashboard.
+                ========================================================== */}
+            <Route path="/saas" element={<AppEntry />} />
+            <Route path="/portal" element={<AppEntry />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<OnboardingPage />} />
 
             {/* ==========================================================
-                2. CORE BUSINESS OS WORKSPACE DIRECT ROUTES
+                3. CORE BUSINESS OS WORKSPACE DIRECT ROUTES
                 All SaaS dashboards and business management modules.
                 ========================================================== */}
             <Route element={<BusinessOSLayout />}>
@@ -133,8 +195,7 @@ function App() {
             </Route>
 
             {/* ==========================================================
-                3. BACKWARD-COMPATIBLE /app WORKSPACE PREFIX ROUTES
-                Ensures all internal bookmarks and references resolve cleanly.
+                4. BACKWARD-COMPATIBLE /app WORKSPACE PREFIX ROUTES
                 ========================================================== */}
             <Route path="/app" element={<BusinessOSLayout />}>
               <Route index element={<DashboardPage />} />
@@ -157,56 +218,17 @@ function App() {
             </Route>
 
             {/* ==========================================================
-                4. CUSTOMER-FACING PUBLIC LIVE PORTALS
+                5. CUSTOMER-FACING PUBLIC LIVE PORTALS
                 ========================================================== */}
             <Route path="/book/:slug" element={<PublicSalonBooking />} />
             <Route path="/menu/:slug" element={<PublicCafeMenu />} />
 
             {/* ==========================================================
-                5. STANDALONE AGENCY MARKETING WEBSITE
-                Strictly separated under /website — never replaces the SaaS OS.
+                6. CATCH-ALL ROUTE (404 Page)
                 ========================================================== */}
-            <Route path="/website" element={<MarketingLayout onOpenQuote={handleOpenQuote} />}>
-              <Route
-                index
-                element={
-                  <HomePage
-                    selectedService={selectedService}
-                    onSelectPackage={handleSelectPackage}
-                    onOpenQuote={handleOpenQuote}
-                  />
-                }
-              />
-              <Route path="products/business-os" element={<ProductBusinessOSPage />} />
-              <Route
-                path="pricing"
-                element={<PricingPage onSelectPackage={handleSelectPackage} />}
-              />
-              <Route path="book-demo" element={<BookDemoPage />} />
-              <Route
-                path="services"
-                element={<ServicesPage onSelectPackage={handleSelectPackage} />}
-              />
-              <Route path="portfolio" element={<PortfolioPage />} />
-              <Route path="about" element={<AboutPage />} />
-              <Route
-                path="contact"
-                element={<ContactPage selectedService={selectedService} />}
-              />
+            <Route element={<MarketingLayout onOpenQuote={handleOpenQuote} />}>
               <Route path="*" element={<NotFoundPage />} />
             </Route>
-
-            {/* Direct convenience marketing routes (under MarketingLayout) */}
-            <Route element={<MarketingLayout onOpenQuote={handleOpenQuote} />}>
-              <Route path="/products/business-os" element={<ProductBusinessOSPage />} />
-              <Route path="/pricing" element={<PricingPage onSelectPackage={handleSelectPackage} />} />
-              <Route path="/book-demo" element={<BookDemoPage />} />
-            </Route>
-
-            {/* ==========================================================
-                6. CATCH-ALL ROUTE: Always redirect to SaaS root '/'
-                ========================================================== */}
-            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
