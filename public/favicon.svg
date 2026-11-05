@@ -1,0 +1,40 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="zBadgeGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="zStrokeGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <linearGradient id="zBarGrad" x1="16" y1="16" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+  </defs>
+
+  <!-- High-contrast Brand Shield (Vibrant sapphire base with electric cyan border) -->
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#zBadgeGrad)" stroke="url(#zStrokeGrad)" stroke-width="2.5" />
+
+  <!-- Circuit Trace Top Left -->
+  <path d="M10 18 H22 L26 22" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="10" cy="18" r="2.5" fill="#38bdf8" />
+
+  <!-- Circuit Trace Bottom Right -->
+  <path d="M54 46 H42 L38 42" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="54" cy="46" r="2.5" fill="#38bdf8" />
+
+  <!-- Geometric Z Structure: Top Bar -->
+  <path d="M18 16 H48 L44 24 H26 L18 16Z" fill="url(#zBarGrad)" />
+
+  <!-- Geometric Z Structure: Brilliant White Diagonal Traverse (Maximum Contrast) -->
+  <path d="M45 22 L23 44 H34 L49 26 L45 22Z" fill="#ffffff" />
+
+  <!-- Geometric Z Structure: Bottom Bar -->
+  <path d="M16 48 L20 40 H38 L46 48 H16Z" fill="url(#zBarGrad)" />
+
+  <!-- Central Pulse Interconnect Node -->
+  <circle cx="32" cy="32" r="3" fill="#38bdf8" />
+</svg>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zynthor-it.vercel.app/sitemap.xml

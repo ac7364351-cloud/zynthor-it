@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import ScrollManager from "./components/ScrollManager/ScrollManager.jsx";
@@ -15,25 +15,31 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import ProductBusinessOSPage from "./pages/ProductBusinessOSPage.jsx";
 import BookDemoPage from "./pages/BookDemoPage.jsx";
 
-function App() {
+function AppContent() {
+  const navigate = useNavigate();
   const [selectedService, setSelectedService] = useState(null);
 
   const handleOpenQuote = () => {
     const contactElem = document.getElementById("contact-form") || document.getElementById("contact");
     if (contactElem) {
       contactElem.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      navigate("/contact");
     }
   };
 
   const handleSelectPackage = (packageName) => {
     setSelectedService(packageName);
-    setTimeout(() => {
-      handleOpenQuote();
-    }, 60);
+    const contactElem = document.getElementById("contact-form") || document.getElementById("contact");
+    if (contactElem) {
+      contactElem.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      navigate("/contact");
+    }
   };
 
   return (
-    <BrowserRouter>
+    <>
       {/* Scroll restoration and route change reset manager */}
       <ScrollManager />
 
@@ -75,6 +81,14 @@ function App() {
 
         <Footer onOpenQuote={handleOpenQuote} />
       </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

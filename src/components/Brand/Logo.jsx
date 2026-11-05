@@ -39,9 +39,9 @@ const Logo = ({ size = "md", showWordmark = true, className = "" }) => {
           width="60"
           height="60"
           rx="14"
-          fill="#090d16"
-          stroke="#1e293b"
-          strokeWidth="2"
+          fill="#0b1329"
+          stroke="url(#zynthorGradCircuit)"
+          strokeWidth="1.75"
         />
 
         {/* Circuit Tracks */}
