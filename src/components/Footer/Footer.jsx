@@ -34,7 +34,7 @@ const Footer = ({ onOpenQuote }) => {
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
               An independent digital engineering studio specializing in high-performance business websites, 
-              custom full-stack web applications, and data analytics solutions.
+              custom full-stack web applications, and our flagship SaaS product, Zynthor Business OS.
             </p>
             <div className="pt-2 text-xs text-slate-500 space-y-1">
               <p className="flex items-center gap-2">
@@ -90,13 +90,23 @@ const Footer = ({ onOpenQuote }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="hover:text-blue-400 transition-colors">
-                  Services
+                <Link to="/products/business-os" className="text-amber-400 hover:text-amber-300 font-medium transition-colors">
+                  Business OS (SaaS)
                 </Link>
               </li>
               <li>
                 <Link to="/pricing" className="hover:text-blue-400 transition-colors">
-                  Pricing (from ₹1,499)
+                  Pricing & Plans
+                </Link>
+              </li>
+              <li>
+                <Link to="/book-demo" className="hover:text-blue-400 transition-colors">
+                  Book a Demo
+                </Link>
+              </li>
+              <li>
+                <Link to="/services" className="hover:text-blue-400 transition-colors">
+                  Services
                 </Link>
               </li>
               <li>

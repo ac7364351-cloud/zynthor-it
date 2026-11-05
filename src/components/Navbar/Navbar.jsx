@@ -55,8 +55,9 @@ const Navbar = ({ onOpenQuote }) => {
 
   const navLinks = [
     { label: "Home", href: "/", anchor: "home", isPage: true },
+    { label: "Products", href: "/products/business-os", isPage: true },
     { label: "Services", href: "/services", anchor: "services" },
-    { label: "Pricing", href: "/pricing", anchor: "pricing" },
+    { label: "Pricing", href: "/pricing", isPage: true },
     { label: "Process", href: "/#process", anchor: "process" },
     { label: "Portfolio", href: "/portfolio", anchor: "portfolio" },
     { label: "About", href: "/about", anchor: "about" },
@@ -94,7 +95,7 @@ const Navbar = ({ onOpenQuote }) => {
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.href;
-              return isHome ? (
+              return isHome && !link.isPage ? (
                 <a
                   key={link.label}
                   href={`#${link.anchor}`}
@@ -118,22 +119,21 @@ const Navbar = ({ onOpenQuote }) => {
             })}
           </nav>
 
-          {/* Action Button: Dedicated Quote trigger & Business OS launch */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Action Button: Dedicated Quote trigger & Book Demo */}
+          <div className="hidden md:flex items-center gap-2.5">
             <Link
-              to="/app"
-              className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-blue-400 border border-blue-500/40 text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm hover:border-blue-400 cursor-pointer"
+              to="/book-demo"
+              className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm hover:border-amber-400 cursor-pointer"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Launch Business OS</span>
+              <span>Book Demo</span>
             </Link>
             <button
               type="button"
               onClick={handleQuoteClick}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 cursor-pointer uppercase tracking-wider"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 hover:-translate-y-0.5 cursor-pointer uppercase tracking-wider"
               aria-label="Get a Project Quote"
             >
-              <span>Get a Quote</span>
+              <span>Get Quote</span>
               <FiArrowRight className="text-sm" />
             </button>
           </div>
@@ -154,7 +154,7 @@ const Navbar = ({ onOpenQuote }) => {
           <div className="lg:hidden border-t border-slate-800/80 py-5 bg-slate-950/98 backdrop-blur-xl">
             <div className="flex flex-col gap-1 text-sm">
               {navLinks.map((link) => {
-                return isHome ? (
+                return isHome && !link.isPage ? (
                   <a
                     key={link.label}
                     href={`#${link.anchor}`}
@@ -181,12 +181,11 @@ const Navbar = ({ onOpenQuote }) => {
 
               <div className="pt-4 mt-2 border-t border-slate-800/80 px-4 space-y-2">
                 <Link
-                  to="/app"
+                  to="/book-demo"
                   onClick={closeMenu}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 border border-blue-500/40 text-blue-400 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 border border-amber-500/40 text-amber-300 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-sm"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Launch Business OS</span>
+                  <span>Book a Live Demo</span>
                 </Link>
                 <button
                   type="button"

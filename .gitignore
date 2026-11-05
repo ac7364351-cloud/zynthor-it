@@ -33,6 +33,9 @@ dist-ssr
 *REPORT.md
 ZYNTHOR_IT_PROJECT_REPORT.md
 .vercel
-server/data/*.db*
+server/data/
+*.db
+*.db-shm
+*.db-wal
 .env*
 !.env.example

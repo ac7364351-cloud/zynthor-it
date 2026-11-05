@@ -1,4 +1,5 @@
 import Hero from "../components/Hero/Hero.jsx";
+import BusinessOSPromo from "../components/BusinessOSPromo/BusinessOSPromo.jsx";
 import Services from "../components/Services/Services.jsx";
 import Pricing from "../components/Pricing/Pricing.jsx";
 import Process from "../components/Process/Process.jsx";
@@ -14,6 +15,7 @@ const HomePage = ({ selectedService, onSelectPackage, onOpenQuote }) => {
   return (
     <>
       <Hero onOpenQuote={onOpenQuote} />
+      <BusinessOSPromo />
       <Services onSelectService={onSelectPackage} />
       <Pricing onSelectPackage={onSelectPackage} />
       <Process />
