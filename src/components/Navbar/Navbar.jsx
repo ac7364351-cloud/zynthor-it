@@ -8,7 +8,7 @@ const Navbar = ({ onOpenQuote }) => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const isHome = location.pathname === "/" || location.pathname === "";
+  const isHome = location.pathname === "/website" || location.pathname === "/website/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,8 +36,7 @@ const Navbar = ({ onOpenQuote }) => {
         }
       }
     } else {
-      // Navigate to homepage contact form or contact page
-      navigate("/#contact-form");
+      navigate("/website#contact-form");
     }
   };
 
@@ -54,15 +53,15 @@ const Navbar = ({ onOpenQuote }) => {
   };
 
   const navLinks = [
-    { label: "Home", href: "/", anchor: "home", isPage: true },
-    { label: "Products", href: "/products/business-os", isPage: true },
-    { label: "Services", href: "/services", anchor: "services" },
-    { label: "Pricing", href: "/pricing", isPage: true },
-    { label: "Process", href: "/#process", anchor: "process" },
-    { label: "Portfolio", href: "/portfolio", anchor: "portfolio" },
-    { label: "About", href: "/about", anchor: "about" },
-    { label: "FAQ", href: "/#faq", anchor: "faq" },
-    { label: "Contact", href: "/contact", anchor: "contact" },
+    { label: "Home", href: "/website", anchor: "home", isPage: true },
+    { label: "Products", href: "/website/products/business-os", isPage: true },
+    { label: "Services", href: "/website/services", anchor: "services" },
+    { label: "Pricing", href: "/website/pricing", isPage: true },
+    { label: "Process", href: "/website#process", anchor: "process" },
+    { label: "Portfolio", href: "/website/portfolio", anchor: "portfolio" },
+    { label: "About", href: "/website/about", anchor: "about" },
+    { label: "FAQ", href: "/website#faq", anchor: "faq" },
+    { label: "Contact", href: "/website/contact", anchor: "contact" },
   ];
 
   return (
@@ -77,7 +76,7 @@ const Navbar = ({ onOpenQuote }) => {
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo with New Geometric Circuit Identity */}
           <Link
-            to="/"
+            to="/website"
             onClick={(e) => {
               closeMenu();
               if (isHome) {
@@ -122,13 +121,13 @@ const Navbar = ({ onOpenQuote }) => {
           {/* Action Button: Dedicated Quote trigger & Business OS launch */}
           <div className="hidden md:flex items-center gap-2.5">
             <Link
-              to="/book-demo"
+              to="/website/book-demo"
               className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm hover:border-amber-400 cursor-pointer"
             >
               <span>Book Demo</span>
             </Link>
             <Link
-              to="/app"
+              to="/"
               className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-blue-400 border border-blue-500/40 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm hover:border-blue-400 cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -188,14 +187,14 @@ const Navbar = ({ onOpenQuote }) => {
 
               <div className="pt-4 mt-2 border-t border-slate-800/80 px-4 space-y-2">
                 <Link
-                  to="/book-demo"
+                  to="/website/book-demo"
                   onClick={closeMenu}
                   className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 border border-amber-500/40 text-amber-300 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-sm"
                 >
                   <span>Book a Live Demo</span>
                 </Link>
                 <Link
-                  to="/app"
+                  to="/"
                   onClick={closeMenu}
                   className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 border border-blue-500/40 text-blue-400 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-sm"
                 >

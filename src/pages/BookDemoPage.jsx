@@ -81,11 +81,11 @@ const BookDemoPage = () => {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           <nav className="flex items-center gap-2 text-xs text-slate-400 mb-4 font-medium">
-            <Link to="/" className="hover:text-blue-400 transition-colors">
+            <Link to="/website" className="hover:text-blue-400 transition-colors">
               Home
             </Link>
             <FiChevronRight className="text-slate-600 text-xs" />
-            <Link to="/products/business-os" className="hover:text-blue-400 transition-colors">
+            <Link to="/website/products/business-os" className="hover:text-blue-400 transition-colors">
               Zynthor Business OS
             </Link>
             <FiChevronRight className="text-slate-600 text-xs" />
@@ -208,7 +208,7 @@ const BookDemoPage = () => {
                       Book another walkthrough
                     </button>
                     <Link
-                      to="/"
+                      to="/website"
                       className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold"
                     >
                       Return to Homepage

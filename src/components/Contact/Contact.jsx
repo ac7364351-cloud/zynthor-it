@@ -8,6 +8,7 @@ const servicesList = [
   "Standard Business Website (from ₹4,999)",
   "Power BI Dashboard (from ₹1,999)",
   "Custom Web Application (from ₹7,999)",
+  "Zynthor Business OS Setup & Consultation",
   "General Consultation / Other",
 ];
 

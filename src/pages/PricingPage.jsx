@@ -134,7 +134,7 @@ const PricingPage = ({ onSelectPackage }) => {
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-slate-400 mb-6 font-medium">
-            <Link to="/" className="hover:text-blue-400 transition-colors">
+            <Link to="/website" className="hover:text-blue-400 transition-colors">
               Home
             </Link>
             <FiChevronRight className="text-slate-600 text-xs" />
@@ -278,7 +278,7 @@ const PricingPage = ({ onSelectPackage }) => {
 
                   <div>
                     <Link
-                      to={plan.id === "enterprise" ? "/contact" : "/book-demo"}
+                      to={plan.id === "enterprise" ? "/website/contact" : "/website/book-demo"}
                       className={`w-full py-2.5 rounded-xl text-xs font-bold text-center block transition-all shadow-md cursor-pointer ${
                         plan.isPopular
                           ? "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/30"

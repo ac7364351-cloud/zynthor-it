@@ -96,7 +96,7 @@ const BusinessOSPromo = () => {
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link
-              to="/products/business-os"
+              to="/website/products/business-os"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-blue-600/30 transition-all cursor-pointer"
             >
               <span>Explore Product Details</span>
@@ -104,11 +104,19 @@ const BusinessOSPromo = () => {
             </Link>
 
             <Link
-              to="/book-demo"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs sm:text-sm font-semibold transition-all hover:border-blue-500 cursor-pointer"
+              to="/website/book-demo"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-xs sm:text-sm font-semibold transition-all hover:border-amber-500 cursor-pointer"
             >
               <FiEye className="text-amber-400" />
               <span>Book a Live Demo</span>
+            </Link>
+
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-950/80 hover:bg-blue-900/80 text-blue-300 border border-blue-500/40 text-xs sm:text-sm font-semibold transition-all hover:border-blue-400 cursor-pointer"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Launch Live SaaS App</span>
             </Link>
           </div>
         </div>
@@ -202,7 +210,7 @@ const BusinessOSPromo = () => {
               </h3>
             </div>
             <Link
-              to="/pricing"
+              to="/website/pricing"
               className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1.5 w-fit"
             >
               <span>View Transparent Pricing (From ₹799/mo)</span>

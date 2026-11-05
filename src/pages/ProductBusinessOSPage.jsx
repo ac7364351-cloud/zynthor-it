@@ -78,7 +78,7 @@ const ProductBusinessOSPage = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-6">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs text-slate-400 mb-6 font-medium">
-            <Link to="/" className="hover:text-blue-400 transition-colors">
+            <Link to="/website" className="hover:text-blue-400 transition-colors">
               Home
             </Link>
             <FiChevronRight className="text-slate-600 text-xs" />
@@ -113,20 +113,20 @@ const ProductBusinessOSPage = () => {
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link
-                to="/book-demo"
+                to="/website/book-demo"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-sm font-semibold shadow-xl shadow-blue-600/30 transition-all cursor-pointer"
               >
                 <span>Book a Guided Walkthrough</span>
                 <FiArrowRight />
               </Link>
               <Link
-                to="/pricing"
+                to="/website/pricing"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 text-sm font-semibold transition-all hover:border-blue-500 cursor-pointer"
               >
                 <span>View Pricing (From ₹799/mo)</span>
               </Link>
               <Link
-                to="/app"
+                to="/"
                 className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-slate-900/60 hover:bg-slate-900 text-blue-400 border border-blue-500/30 text-sm font-bold transition-all"
               >
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -407,14 +407,14 @@ const ProductBusinessOSPage = () => {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link
-              to="/book-demo"
+              to="/website/book-demo"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-600/30 transition-all cursor-pointer text-sm"
             >
               <span>Schedule Free Live Demo</span>
               <FiArrowRight />
             </Link>
             <Link
-              to="/pricing"
+              to="/website/pricing"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-sm transition-all"
             >
               <span>Explore Commercial Pricing</span>
