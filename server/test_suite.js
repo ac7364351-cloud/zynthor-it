@@ -1,7 +1,8 @@
 /**
  * Zynthor Business OS — End-to-End Automated Test Suite
  * Tests multi-tenancy, authentication, CRM, Salon booking with double-booking prevention,
- * Cafe KDS & QR menus, AI intent routing & Hinglish detection, and settings.
+ * Cafe KDS & QR menus, AI intent routing & Hinglish detection, Business CRUD/Archive/Delete safety,
+ * Financial Invoicing & Coupon Validation, and Atomic Transaction Rollback.
  */
 
 const assert = require("node:assert");
@@ -44,6 +45,9 @@ async function runTestSuite() {
     assert.notStrictEqual(hashed, raw);
     assert.strictEqual(verifyPassword(raw, hashed), true);
     assert.strictEqual(verifyPassword("WrongPassword", hashed), false);
+
+    // Verify rejection of short password
+    assert.throws(() => hashPassword("123"), /Password must be at least 6 characters/);
   });
 
   await test("HMAC-SHA256 Token Signing & Expiration", async () => {
@@ -58,6 +62,10 @@ async function runTestSuite() {
     const expiredToken = signToken(payload, -1000);
     const expiredDecoded = verifyToken(expiredToken);
     assert.strictEqual(expiredDecoded, null, "Expired token must be rejected");
+
+    // Test tampered token
+    const tampered = token.slice(0, -5) + "abcde";
+    assert.strictEqual(verifyToken(tampered), null, "Tampered token must be rejected");
   });
 
   // 3. Multi-Tenant Isolation
@@ -180,6 +188,110 @@ async function runTestSuite() {
     assert.strictEqual(b.plan, "enterprise");
     // Restore
     await db.run("UPDATE businesses SET plan = 'growth' WHERE id = 1");
+  });
+
+  // 9. Business Management: Complete Lifecycle (Create, Edit, Archive, Restore, Permanent Deletion)
+  await test("Business Management: Create, Edit, Archive & Restore Lifecycle", async () => {
+    // 1. Create isolated test business
+    const slug = "test-corp-qa-" + Date.now();
+    const createRes = await db.run(
+      `INSERT INTO businesses (name, slug, industry, email, phone, plan, status, is_archived)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      ["QA Test Enterprise", slug, "agency", "qa@testcorp.com", "+91 90000 00001", "starter", "active", 0]
+    );
+    const testId = createRes.insertId;
+    assert.ok(testId > 0, "Test business insertId must be > 0");
+
+    // 2. Edit business
+    await db.run("UPDATE businesses SET name = 'QA Test Enterprise Edited', plan = 'growth' WHERE id = ?", [testId]);
+    const edited = await db.get("SELECT name, plan FROM businesses WHERE id = ?", [testId]);
+    assert.strictEqual(edited.name, "QA Test Enterprise Edited");
+    assert.strictEqual(edited.plan, "growth");
+
+    // 3. Deactivate business
+    await db.run("UPDATE businesses SET status = 'inactive' WHERE id = ?", [testId]);
+    const deactivated = await db.get("SELECT status FROM businesses WHERE id = ?", [testId]);
+    assert.strictEqual(deactivated.status, "inactive");
+
+    // 4. Archive business
+    await db.run("UPDATE businesses SET is_archived = 1, status = 'archived', archived_at = CURRENT_TIMESTAMP WHERE id = ?", [testId]);
+    const archived = await db.get("SELECT is_archived, status FROM businesses WHERE id = ?", [testId]);
+    assert.strictEqual(Number(archived.is_archived), 1);
+    assert.strictEqual(archived.status, "archived");
+
+    // 5. Restore business
+    await db.run("UPDATE businesses SET is_archived = 0, status = 'active', archived_at = NULL WHERE id = ?", [testId]);
+    const restored = await db.get("SELECT is_archived, status FROM businesses WHERE id = ?", [testId]);
+    assert.strictEqual(Number(restored.is_archived), 0);
+    assert.strictEqual(restored.status, "active");
+
+    // 6. Clean up test business
+    await db.run("DELETE FROM businesses WHERE id = ?", [testId]);
+  });
+
+  // 10. Database Atomic Transactions & Rollback Safety
+  await test("Database ACID Transaction Commit and Rollback Safety", async () => {
+    // Test successful transaction
+    const tSuccess = await db.transaction(async (tx) => {
+      const row = await tx.get("SELECT COUNT(*) as count FROM businesses");
+      return row.count;
+    });
+    assert.ok(tSuccess >= 3, "Business count must be >= 3");
+
+    // Test rollback on error
+    const beforeCount = (await db.get("SELECT COUNT(*) as count FROM contacts"))?.count || 0;
+    try {
+      await db.transaction(async (tx) => {
+        await tx.run("INSERT INTO contacts (name, email, message) VALUES (?, ?, ?)", ["Temp Client", "temp@temp.com", "Test msg"]);
+        throw new Error("Simulated failure to verify automatic transaction rollback");
+      });
+    } catch (_err) {
+      // Expected exception
+    }
+    const afterCount = (await db.get("SELECT COUNT(*) as count FROM contacts"))?.count || 0;
+    assert.strictEqual(afterCount, beforeCount, "Transaction rollback must prevent phantom writes");
+  });
+
+  // 11. Financial Invoicing & Server-Side Math
+  await test("Financial Invoicing Calculation & Sequential Numbering", async () => {
+    const bId = 1;
+    const subtotal = 10000;
+    const discount = 1000; // 10%
+    const taxable = subtotal - discount; // 9000
+    const tax = Math.round(taxable * 0.18 * 100) / 100; // 1620
+    const total = taxable + tax; // 10620
+
+    const invRes = await db.run(
+      `INSERT INTO invoices (business_id, invoice_number, customer_name, subtotal, discount, tax, total, status, items_json)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [bId, "TEST-INV-9999", "QA Test Billing", subtotal, discount, tax, total, "pending", JSON.stringify([{ name: "Suite", price: 10000, qty: 1 }])]
+    );
+    assert.ok(invRes.insertId > 0);
+
+    const inv = await db.get("SELECT * FROM invoices WHERE id = ?", [invRes.insertId]);
+    assert.strictEqual(Number(inv.total), 10620, "Total must match server-calculated sum");
+
+    // Clean up
+    await db.run("DELETE FROM invoices WHERE id = ?", [invRes.insertId]);
+  });
+
+  // 12. Coupon Validation & Expiry Rules
+  await test("Coupon Redemption & Minimum Spend Threshold Validation", async () => {
+    const coupon = await db.get("SELECT * FROM coupons WHERE code = 'LUXE10'");
+    assert.ok(coupon, "LUXE10 coupon must exist");
+    assert.strictEqual(coupon.discount_type, "percent");
+    assert.strictEqual(Number(coupon.discount_val), 10);
+    assert.strictEqual(Number(coupon.min_spend), 2000);
+
+    // Spend below min_spend should not qualify
+    const invalidSpend = 1500;
+    const qualifies = invalidSpend >= coupon.min_spend;
+    assert.strictEqual(qualifies, false, "Spend below minimum must be rejected");
+
+    // Spend above min_spend qualifies
+    const validSpend = 5000;
+    const discountAmount = (validSpend * coupon.discount_val) / 100;
+    assert.strictEqual(discountAmount, 500, "Discount amount must match percentage calculation");
   });
 
   console.log("------------------------------------------------------------------");

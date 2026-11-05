@@ -40,6 +40,9 @@ export default function BrandEditorPage() {
             phone: res.business.phone || "",
             address: res.business.address || "",
             brandVoice: res.settings?.brand_voice || prev.brandVoice,
+            tagline: res.settings?.tagline || prev.tagline,
+            primaryColor: res.settings?.primary_color || prev.primaryColor,
+            announcement: res.settings?.banner_message || prev.announcement,
           }));
         }
       } catch (e) {
@@ -59,6 +62,9 @@ export default function BrandEditorPage() {
         phone: formData.phone,
         address: formData.address,
         brand_voice: formData.brandVoice,
+        tagline: formData.tagline,
+        primary_color: formData.primaryColor,
+        banner_message: formData.announcement,
       });
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);

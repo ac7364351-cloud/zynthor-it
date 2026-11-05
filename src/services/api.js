@@ -53,7 +53,29 @@ export const api = {
   markNotificationRead: (id) => request(`/api/notifications/${id}/read`, { method: "PUT" }),
   markAllNotificationsRead: () => request("/api/notifications/read-all", { method: "PUT" }),
   getActivities: () => request("/api/activities"),
-  getBusinesses: () => request("/api/businesses"),
+
+  // Business Management (Full Super Admin Lifecycle)
+  getBusinesses: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return request(`/api/businesses${qs ? "?" + qs : ""}`);
+  },
+  getArchivedBusinesses: () => request("/api/businesses/archived"),
+  getBusiness: (id) => request(`/api/businesses/${id}`),
+  createBusiness: (data) => request("/api/businesses", { method: "POST", body: JSON.stringify(data) }),
+  updateBusiness: (id, data) => request(`/api/businesses/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  activateBusiness: (id) => request(`/api/businesses/${id}/activate`, { method: "PUT" }),
+  deactivateBusiness: (id) => request(`/api/businesses/${id}/deactivate`, { method: "PUT" }),
+  archiveBusiness: (id) => request(`/api/businesses/${id}/archive`, { method: "PUT" }),
+  restoreBusiness: (id) => request(`/api/businesses/${id}/restore`, { method: "PUT" }),
+  exportBusinessUrl: (id) => {
+    const token = localStorage.getItem("zynthor_token") || "";
+    return `${API_BASE}/api/businesses/${id}/export?token=${token}`;
+  },
+  deleteBusinessPermanent: (id, confirmName, force = false) =>
+    request(`/api/businesses/${id}/permanent`, {
+      method: "DELETE",
+      body: JSON.stringify({ confirmName, force }),
+    }),
 
   // 2. Leads & CRM
   getLeads: (status, search) => {
@@ -125,8 +147,24 @@ export const api = {
   getAIRules: () => request("/api/ai/rules"),
   updateAIRule: (id, is_enabled) => request(`/api/ai/rules/${id}`, { method: "PUT", body: JSON.stringify({ is_enabled }) }),
   getAILogs: () => request("/api/ai/logs"),
+  testAutomationTrigger: (data) => request("/api/automation/test-trigger", { method: "POST", body: JSON.stringify(data) }),
 
-  // 7. Settings, Team & Billing
+  // 7. Financial Invoices & Coupons
+  getInvoices: (status, search) => {
+    const params = new URLSearchParams();
+    if (status && status !== "all") params.append("status", status);
+    if (search) params.append("search", search);
+    const qs = params.toString();
+    return request(`/api/invoices${qs ? "?" + qs : ""}`);
+  },
+  createInvoice: (data) => request("/api/invoices", { method: "POST", body: JSON.stringify(data) }),
+  updateInvoiceStatus: (id, status) => request(`/api/invoices/${id}/status`, { method: "PUT", body: JSON.stringify({ status }) }),
+  payInvoice: (id) => request(`/api/invoices/${id}/pay`, { method: "POST" }),
+  getCoupons: () => request("/api/coupons"),
+  createCoupon: (data) => request("/api/coupons", { method: "POST", body: JSON.stringify(data) }),
+  validateCoupon: (code, subtotal) => request("/api/coupons/validate", { method: "POST", body: JSON.stringify({ code, subtotal }) }),
+
+  // 8. Settings, Team & Billing
   getSettings: () => request("/api/settings"),
   updateSettings: (data) => request("/api/settings", { method: "PUT", body: JSON.stringify(data) }),
   getTeam: () => request("/api/team"),

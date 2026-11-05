@@ -13,11 +13,129 @@ function hashPassword(password) {
   return `${salt}:${hash}`;
 }
 
+async function seedInvoicesAndCoupons() {
+  try {
+    const existingCoupons = await db.get("SELECT COUNT(*) as count FROM coupons");
+    if (!existingCoupons || existingCoupons.count === 0) {
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [1, "LUXE10", "10% VIP discount on all signature beauty therapies", "percent", 10, 2000, 1500, "2026-01-01", "2026-12-31", 200, 14, 1]
+      );
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [1, "WELCOME500", "Flat ₹500 discount for first-time spa clients", "flat", 500, 2500, 500, "2026-01-01", "2026-12-31", 100, 8, 1]
+      );
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [2, "VELVET20", "20% off on all artisanal woodfired dining", "percent", 20, 1000, 800, "2026-01-01", "2026-12-31", 150, 26, 1]
+      );
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [3, "LAUNCH15", "15% off software architecture contracts", "percent", 15, 20000, 10000, "2026-01-01", "2026-12-31", 50, 3, 1]
+      );
+      console.log("[Seed] Populated initial promotional coupons.");
+    }
+
+    const existingInvoices = await db.get("SELECT COUNT(*) as count FROM invoices");
+    if (!existingInvoices || existingInvoices.count === 0) {
+      await db.run(
+        `INSERT INTO invoices (business_id, invoice_number, customer_id, customer_name, customer_email, customer_phone, subtotal, discount, coupon_code, tax, total, status, payment_method, due_date, paid_at, notes, items_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          1,
+          "INV-2026-0001",
+          1,
+          "Ananya Singhania",
+          "ananya.s@gmail.com",
+          "+91 98201 11223",
+          11000,
+          1100,
+          "LUXE10",
+          1782,
+          11682,
+          "paid",
+          "UPI / Razorpay",
+          "2026-11-04",
+          "2026-11-04 16:45:00",
+          "Full bridal session with Elena Rostova",
+          JSON.stringify([
+            { name: "Signature French Balayage", price: 6500, qty: 1 },
+            { name: "Olaplex Bond Repair & Blowout", price: 4500, qty: 1 }
+          ])
+        ]
+      );
+      await db.run(
+        `INSERT INTO invoices (business_id, invoice_number, customer_id, customer_name, customer_email, customer_phone, subtotal, discount, coupon_code, tax, total, status, payment_method, due_date, paid_at, notes, items_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          2,
+          "INV-2026-0002",
+          2,
+          "Rajiv Saxena",
+          "rajiv@gmail.com",
+          "+91 98199 44332",
+          1450,
+          290,
+          "VELVET20",
+          58,
+          1218,
+          "paid",
+          "Card / POS",
+          "2026-11-04",
+          "2026-11-04 19:30:00",
+          "Dine-in Table 4 Chef special selection",
+          JSON.stringify([
+            { name: "Truffle Burrata & Wild Mushroom Pizza", price: 850, qty: 1 },
+            { name: "Artisanal Cold Brew Tonic", price: 320, qty: 1 },
+            { name: "Belgian Dark Chocolate Mousse", price: 280, qty: 1 }
+          ])
+        ]
+      );
+      await db.run(
+        `INSERT INTO invoices (business_id, invoice_number, customer_id, customer_name, customer_email, customer_phone, subtotal, discount, coupon_code, tax, total, status, payment_method, due_date, paid_at, notes, items_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          3,
+          "INV-2026-0003",
+          3,
+          "Rohit Deshmukh",
+          "rohit@fintechzen.com",
+          "+91 98210 55443",
+          75000,
+          0,
+          null,
+          13500,
+          88500,
+          "pending",
+          "Bank Wire",
+          "2026-11-20",
+          null,
+          "Milestone 1 — Custom CRM & Webhook Integration",
+          JSON.stringify([
+            { name: "Enterprise Custom Software License", price: 50000, qty: 1 },
+            { name: "Dedicated Deployment & SLA Support", price: 25000, qty: 1 }
+          ])
+        ]
+      );
+      console.log("[Seed] Populated initial financial invoices.");
+    }
+  } catch (err) {
+    console.warn("[Seed] Invoices/Coupons seed notice:", err.message);
+  }
+}
+
 async function seedData() {
   try {
+    // Check if invoices/coupons need seeding
+    await seedInvoicesAndCoupons();
+
     const existingBusinesses = await db.all("SELECT id, slug FROM businesses LIMIT 5");
     if (existingBusinesses && existingBusinesses.length > 0) {
-      console.log(`[Seed] Database already contains ${existingBusinesses.length} businesses. Skipping seed.`);
+      console.log(`[Seed] Database already contains ${existingBusinesses.length} businesses. Skipping core business seed.`);
       return;
     }
 
@@ -716,6 +834,115 @@ async function seedData() {
         JSON.stringify({ customer: "Ananya Singhania", service: "Signature French Balayage", staff: "Elena Rostova" }),
       ]
     );
+
+    // Initial Coupons (if empty)
+    const existingCoupons = await db.get("SELECT COUNT(*) as count FROM coupons");
+    if (!existingCoupons || existingCoupons.count === 0) {
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [b1Id, "LUXE10", "10% VIP discount on all signature beauty therapies", "percent", 10, 2000, 1500, "2026-01-01", "2026-12-31", 200, 14, 1]
+      );
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [b1Id, "WELCOME500", "Flat ₹500 discount for first-time spa clients", "flat", 500, 2500, 500, "2026-01-01", "2026-12-31", 100, 8, 1]
+      );
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [b2Id, "VELVET20", "20% off on all artisanal woodfired dining", "percent", 20, 1000, 800, "2026-01-01", "2026-12-31", 150, 26, 1]
+      );
+      await db.run(
+        `INSERT INTO coupons (business_id, code, description, discount_type, discount_val, min_spend, max_discount, valid_from, valid_to, usage_limit, used_count, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [b3Id, "LAUNCH15", "15% off software architecture contracts", "percent", 15, 20000, 10000, "2026-01-01", "2026-12-31", 50, 3, 1]
+      );
+    }
+
+    // Initial Invoices (if empty)
+    const existingInvoices = await db.get("SELECT COUNT(*) as count FROM invoices");
+    if (!existingInvoices || existingInvoices.count === 0) {
+      await db.run(
+        `INSERT INTO invoices (business_id, invoice_number, customer_id, customer_name, customer_email, customer_phone, subtotal, discount, coupon_code, tax, total, status, payment_method, due_date, paid_at, notes, items_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          b1Id,
+          "INV-2026-0001",
+          1,
+          "Ananya Singhania",
+          "ananya.s@gmail.com",
+          "+91 98201 11223",
+          11000,
+          1100,
+          "LUXE10",
+          1782,
+          11682,
+          "paid",
+          "UPI / Razorpay",
+          "2026-11-04",
+          "2026-11-04 16:45:00",
+          "Full bridal session with Elena Rostova",
+          JSON.stringify([
+            { name: "Signature French Balayage", price: 6500, qty: 1 },
+            { name: "Olaplex Bond Repair & Blowout", price: 4500, qty: 1 }
+          ])
+        ]
+      );
+      await db.run(
+        `INSERT INTO invoices (business_id, invoice_number, customer_id, customer_name, customer_email, customer_phone, subtotal, discount, coupon_code, tax, total, status, payment_method, due_date, paid_at, notes, items_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          b2Id,
+          "INV-2026-0002",
+          2,
+          "Rajiv Saxena",
+          "rajiv@gmail.com",
+          "+91 98199 44332",
+          1450,
+          290,
+          "VELVET20",
+          58,
+          1218,
+          "paid",
+          "Card / POS",
+          "2026-11-04",
+          "2026-11-04 19:30:00",
+          "Dine-in Table 4 Chef special selection",
+          JSON.stringify([
+            { name: "Truffle Burrata & Wild Mushroom Pizza", price: 850, qty: 1 },
+            { name: "Artisanal Cold Brew Tonic", price: 320, qty: 1 },
+            { name: "Belgian Dark Chocolate Mousse", price: 280, qty: 1 }
+          ])
+        ]
+      );
+      await db.run(
+        `INSERT INTO invoices (business_id, invoice_number, customer_id, customer_name, customer_email, customer_phone, subtotal, discount, coupon_code, tax, total, status, payment_method, due_date, paid_at, notes, items_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          b3Id,
+          "INV-2026-0003",
+          3,
+          "Rohit Deshmukh",
+          "rohit@fintechzen.com",
+          "+91 98210 55443",
+          75000,
+          0,
+          null,
+          13500,
+          88500,
+          "pending",
+          "Bank Wire",
+          "2026-11-20",
+          null,
+          "Milestone 1 — Custom CRM & Webhook Integration",
+          JSON.stringify([
+            { name: "Enterprise Custom Software License", price: 50000, qty: 1 },
+            { name: "Dedicated Deployment & SLA Support", price: 25000, qty: 1 }
+          ])
+        ]
+      );
+    }
 
     console.log("[Seed] Initial data successfully seeded for all 3 business verticals.");
   } catch (err) {

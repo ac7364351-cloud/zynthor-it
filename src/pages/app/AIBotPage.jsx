@@ -111,7 +111,7 @@ export default function AIBotPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white flex items-center space-x-2">
+            <h1 className="text-2xl font-bold tracking-tight text-theme-primary flex items-center space-x-2">
               <FiCpu className="text-blue-400" />
               <span>Zynthor AI Copilot</span>
             </h1>
@@ -119,17 +119,38 @@ export default function AIBotPage() {
               Multilingual (EN / HI / Hinglish)
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-theme-muted mt-1">
             Contextual business assistant powered by authorized database models and domain rules.
           </p>
         </div>
 
         {/* Telemetry pill */}
         <div className="flex items-center space-x-3 text-xs">
-          <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 flex items-center space-x-2">
+          <div className="px-3 py-1.5 rounded-xl bg-theme-surface border border-theme-subtle text-theme-secondary flex items-center space-x-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span>Domain Context: <strong className="text-white capitalize">{business?.industry}</strong></span>
+            <span>Domain Context: <strong className="text-theme-primary capitalize">{business?.industry}</strong></span>
           </div>
+        </div>
+      </div>
+
+      {/* AI Engine Transparency & Provider Status (Phase 13 Compliance) */}
+      <div className="p-4 rounded-2xl bg-blue-950/30 border border-blue-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-blue-200">
+        <div className="flex items-start gap-2.5">
+          <FiZap className="text-blue-400 text-base shrink-0 mt-0.5" />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-white">Active Engine: Zynthor Deterministic Domain Engine</span>
+              <span className="px-1.5 py-0.2 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-mono text-[10px] uppercase font-bold">
+                Online & Grounded
+              </span>
+            </div>
+            <p className="text-theme-muted mt-0.5 text-[11px]">
+              Answers are directly grounded in authorized database records (menu prices, salon appointments, leads). No customer data is transmitted to unapproved third-party LLMs.
+            </p>
+          </div>
+        </div>
+        <div className="text-[10px] font-mono text-theme-muted bg-theme-surface px-2.5 py-1.5 rounded-xl border border-theme-subtle shrink-0">
+          External LLM API: <span className="text-amber-400 font-bold">Standby (API Key Not Configured)</span>
         </div>
       </div>
 
@@ -154,7 +175,7 @@ export default function AIBotPage() {
       {/* Main Workspace: Chat + Templates Sidecar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Interactive Chat Window */}
-        <div className="lg:col-span-8 flex flex-col h-[70vh] rounded-3xl bg-slate-900/70 border border-slate-800/80 backdrop-blur-xl shadow-2xl overflow-hidden">
+        <div className="lg:col-span-8 flex flex-col h-[70vh] rounded-3xl bg-theme-card border border-theme-card backdrop-blur-xl shadow-2xl overflow-hidden">
           {/* Messages Feed */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
             {messages.map((m, idx) => {
@@ -167,14 +188,14 @@ export default function AIBotPage() {
                   <div
                     className={`max-w-[85%] rounded-2xl p-4 text-xs leading-relaxed shadow-lg ${
                       isAssistant
-                        ? "bg-slate-950/90 border border-slate-800 text-slate-200"
+                        ? "bg-theme-surface border border-theme-subtle text-theme-primary"
                         : "bg-blue-600 text-white font-medium shadow-blue-600/25"
                     }`}
                   >
                     <div className="whitespace-pre-line">{m.text}</div>
                     <div
                       className={`text-[9px] mt-2 font-mono ${
-                        isAssistant ? "text-slate-400" : "text-blue-200"
+                        isAssistant ? "text-theme-muted" : "text-blue-200"
                       }`}
                     >
                       {m.time} {m.language && `• ${m.language.toUpperCase()}`}
@@ -188,7 +209,7 @@ export default function AIBotPage() {
                         <button
                           key={aIdx}
                           onClick={() => handleSendMessage(action)}
-                          className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-[11px] text-blue-300 font-medium transition-colors"
+                          className="px-2.5 py-1 rounded-lg bg-theme-surface hover:bg-theme-surface-hover border border-theme-subtle text-[11px] text-blue-400 font-medium transition-colors cursor-pointer"
                         >
                           {action}
                         </button>
@@ -200,7 +221,7 @@ export default function AIBotPage() {
             })}
 
             {loading && (
-              <div className="flex items-center space-x-2 p-3 rounded-2xl bg-slate-950/80 border border-slate-800 text-xs text-slate-400 max-w-xs">
+              <div className="flex items-center space-x-2 p-3 rounded-2xl bg-theme-surface border border-theme-subtle text-xs text-theme-muted max-w-xs">
                 <div className="w-3 h-3 rounded-full bg-blue-500 animate-ping" />
                 <span>Copilot synthesizing response...</span>
               </div>
@@ -209,7 +230,7 @@ export default function AIBotPage() {
           </div>
 
           {/* Chat Input Bar */}
-          <div className="p-3 sm:p-4 border-t border-slate-800/80 bg-slate-950/80">
+          <div className="p-3 sm:p-4 border-t border-theme-subtle bg-theme-surface">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -222,12 +243,12 @@ export default function AIBotPage() {
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
                 placeholder="Ask in English or Hinglish (e.g. 'Balayage ke rates kya hain?', 'Book table for 4')..."
-                className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                className="flex-1 bg-theme-card border border-theme-subtle rounded-xl px-4 py-2.5 text-xs text-theme-primary placeholder-theme-muted focus:outline-none focus:border-blue-500"
               />
               <button
                 type="submit"
                 disabled={loading || !inputVal.trim()}
-                className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white shadow-lg shadow-blue-600/30 transition-all"
+                className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white shadow-lg shadow-blue-600/30 transition-all cursor-pointer"
               >
                 <FiSend className="text-sm" />
               </button>
@@ -238,23 +259,23 @@ export default function AIBotPage() {
         {/* Right: Operational Sidecar & Reply Templates */}
         <div className="lg:col-span-4 space-y-4">
           {/* Quick Reply Templates Card */}
-          <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800/80 backdrop-blur-xl shadow-xl space-y-4">
-            <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+          <div className="p-5 rounded-3xl bg-theme-card border border-theme-card backdrop-blur-xl shadow-xl space-y-4">
+            <h2 className="text-sm font-bold text-theme-primary flex items-center space-x-2">
               <FiZap className="text-amber-400" />
               <span>Executive Reply Templates</span>
             </h2>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-theme-muted">
               One-click response templates formatted for WhatsApp and email communication.
             </p>
 
             <div className="space-y-3">
               {templates.map((tpl, idx) => (
-                <div key={idx} className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800/80 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-semibold text-slate-200">
+                <div key={idx} className="p-3 rounded-2xl bg-theme-surface border border-theme-subtle space-y-2">
+                  <div className="flex items-center justify-between text-xs font-semibold text-theme-primary">
                     <span>{tpl.title}</span>
                     <button
                       onClick={() => handleCopyTemplate(idx, tpl.content)}
-                      className="p-1 text-slate-400 hover:text-white rounded"
+                      className="p-1 text-theme-muted hover:text-theme-primary rounded cursor-pointer"
                       title="Copy text"
                     >
                       {copiedTemplate === idx ? (
@@ -264,18 +285,18 @@ export default function AIBotPage() {
                       )}
                     </button>
                   </div>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">{tpl.content}</p>
+                  <p className="text-[11px] text-theme-muted leading-relaxed">{tpl.content}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* AI Safety & Guardrails Specs */}
-          <div className="p-5 rounded-3xl bg-slate-900/70 border border-slate-800/80 backdrop-blur-xl shadow-xl space-y-3 text-xs">
-            <span className="text-[10px] font-mono uppercase text-slate-400 font-bold block">
+          <div className="p-5 rounded-3xl bg-theme-card border border-theme-card backdrop-blur-xl shadow-xl space-y-3 text-xs">
+            <span className="text-[10px] font-mono uppercase text-theme-muted font-bold block">
               Guardrails & Compliance
             </span>
-            <div className="space-y-2 text-[11px] text-slate-300">
+            <div className="space-y-2 text-[11px] text-theme-secondary">
               <div className="flex items-start space-x-2">
                 <FiCheckCircle className="text-emerald-400 mt-0.5 flex-shrink-0" />
                 <span>Zero Price Hallucination: Verifies real database rates.</span>

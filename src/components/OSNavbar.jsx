@@ -282,6 +282,12 @@ export default function OSNavbar({
                       key={n.id}
                       onClick={() => {
                         api.markNotificationRead(n.id);
+                        setNotifications((prev) =>
+                          prev.map((item) => (item.id === n.id ? { ...item, is_read: 1 } : item))
+                        );
+                        if (!n.is_read) {
+                          setUnreadCount((prev) => Math.max(0, prev - 1));
+                        }
                         if (n.link) navigate(n.link);
                         setNotifDropdown(false);
                       }}

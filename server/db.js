@@ -175,6 +175,78 @@ async function exec(sql) {
   return sqliteDb.exec(sql);
 }
 
+/**
+ * Universal ACID transaction runner for both MySQL and SQLite
+ */
+async function transaction(callback) {
+  if (activeDriver === "mysql" && mysqlPool) {
+    return new Promise((resolve, reject) => {
+      mysqlPool.getConnection(async (err, conn) => {
+        if (err) return reject(err);
+        conn.beginTransaction(async (bErr) => {
+          if (bErr) {
+            conn.release();
+            return reject(bErr);
+          }
+          const connRunner = {
+            query: (sql, params = []) =>
+              new Promise((res, rej) => conn.query(sql, params, (e, r) => (e ? rej(e) : res(r)))),
+            run: (sql, params = []) =>
+              new Promise((res, rej) =>
+                conn.query(sql, params, (e, r) =>
+                  e ? rej(e) : res({ insertId: r?.insertId, affectedRows: r?.affectedRows })
+                )
+              ),
+            get: async (sql, params = []) => {
+              const rows = await new Promise((res, rej) =>
+                conn.query(sql, params, (e, r) => (e ? rej(e) : res(r)))
+              );
+              return rows && rows.length > 0 ? rows[0] : null;
+            },
+            all: (sql, params = []) =>
+              new Promise((res, rej) => conn.query(sql, params, (e, r) => (e ? rej(e) : res(r)))),
+            exec: (sql) =>
+              new Promise((res, rej) => conn.query(sql, (e, r) => (e ? rej(e) : res(r)))),
+          };
+          try {
+            const result = await callback(connRunner);
+            conn.commit((cErr) => {
+              if (cErr) {
+                conn.rollback(() => {
+                  conn.release();
+                  reject(cErr);
+                });
+              } else {
+                conn.release();
+                resolve(result);
+              }
+            });
+          } catch (execErr) {
+            conn.rollback(() => {
+              conn.release();
+              reject(execErr);
+            });
+          }
+        });
+      });
+    });
+  }
+
+  // SQLite execution
+  if (!sqliteDb) initSqlite();
+  sqliteDb.exec("BEGIN IMMEDIATE TRANSACTION;");
+  try {
+    const result = await callback({ query, get, all, run, exec });
+    sqliteDb.exec("COMMIT;");
+    return result;
+  } catch (err) {
+    try {
+      sqliteDb.exec("ROLLBACK;");
+    } catch (_rbErr) {}
+    throw err;
+  }
+}
+
 function getDriver() {
   return activeDriver;
 }
@@ -185,5 +257,6 @@ module.exports = {
   all,
   run,
   exec,
+  transaction,
   getDriver,
 };

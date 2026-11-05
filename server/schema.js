@@ -1,12 +1,12 @@
 /**
- * Zynthor Business OS — Schema Initializer
- * Auto-creates all multi-tenant tables for CRM, Salon, Cafe, AI & Settings.
+ * Zynthor Business OS — Schema Initializer & Migration Engine
+ * Auto-creates all multi-tenant tables, indexes, and safely applies incremental migrations.
  */
 
 const db = require("./db");
 
 async function initSchema() {
-  console.log("[Schema] Initializing database tables...");
+  console.log("[Schema] Initializing database tables & applying migrations...");
 
   const driver = db.getDriver();
   const idType = driver === "sqlite" ? "INTEGER PRIMARY KEY AUTOINCREMENT" : "INT AUTO_INCREMENT PRIMARY KEY";
@@ -25,6 +25,11 @@ async function initSchema() {
       currency VARCHAR(10) DEFAULT 'INR',
       plan VARCHAR(50) DEFAULT 'growth',
       plan_status VARCHAR(50) DEFAULT 'active',
+      status VARCHAR(50) DEFAULT 'active',
+      is_archived INTEGER DEFAULT 0,
+      archived_at DATETIME DEFAULT NULL,
+      deleted_at DATETIME DEFAULT NULL,
+      deleted_by INTEGER DEFAULT NULL,
       is_demo INTEGER DEFAULT 0,
       created_at ${tsType},
       updated_at ${tsType}
@@ -42,7 +47,7 @@ async function initSchema() {
       created_at ${tsType}
     )`,
 
-    // 3. Contacts (Preserves backward compatibility with existing Zynthor agency contact form)
+    // 3. Contacts
     `CREATE TABLE IF NOT EXISTS contacts (
       id ${idType},
       name VARCHAR(100) NOT NULL,
@@ -67,6 +72,8 @@ async function initSchema() {
       source VARCHAR(50) DEFAULT 'Website Inbound',
       status VARCHAR(50) DEFAULT 'new',
       notes TEXT,
+      follow_up_date VARCHAR(20),
+      assigned_to VARCHAR(100),
       last_contacted_at DATETIME,
       created_at ${tsType},
       updated_at ${tsType}
@@ -292,6 +299,7 @@ async function initSchema() {
       rule_name VARCHAR(150),
       trigger_event VARCHAR(100) NOT NULL,
       status VARCHAR(50) DEFAULT 'success',
+      delivery_mode VARCHAR(50) DEFAULT 'simulated',
       payload_json TEXT,
       error_message TEXT,
       executed_at ${tsType}
@@ -309,7 +317,79 @@ async function initSchema() {
       notification_sms VARCHAR(50),
       timezone VARCHAR(50) DEFAULT 'Asia/Kolkata',
       operating_hours TEXT,
+      tagline TEXT,
+      primary_color VARCHAR(50) DEFAULT 'blue',
+      banner_message TEXT,
       updated_at ${tsType}
+    )`,
+
+    // 21. Invoices (Phase 10)
+    `CREATE TABLE IF NOT EXISTS invoices (
+      id ${idType},
+      business_id INTEGER NOT NULL,
+      invoice_number VARCHAR(50) NOT NULL,
+      customer_id INTEGER,
+      customer_name VARCHAR(100) NOT NULL,
+      customer_email VARCHAR(150),
+      customer_phone VARCHAR(50),
+      subtotal REAL NOT NULL,
+      discount REAL DEFAULT 0,
+      coupon_code VARCHAR(50),
+      tax REAL DEFAULT 0,
+      total REAL NOT NULL,
+      status VARCHAR(50) DEFAULT 'pending',
+      payment_method VARCHAR(50) DEFAULT 'online',
+      due_date VARCHAR(20),
+      paid_at DATETIME,
+      notes TEXT,
+      items_json TEXT NOT NULL,
+      created_at ${tsType},
+      updated_at ${tsType}
+    )`,
+
+    // 22. Coupons (Phase 10)
+    `CREATE TABLE IF NOT EXISTS coupons (
+      id ${idType},
+      business_id INTEGER NOT NULL,
+      code VARCHAR(50) NOT NULL,
+      description TEXT,
+      discount_type VARCHAR(20) DEFAULT 'percent',
+      discount_val REAL NOT NULL,
+      min_spend REAL DEFAULT 0,
+      max_discount REAL,
+      valid_from VARCHAR(20),
+      valid_to VARCHAR(20),
+      usage_limit INTEGER DEFAULT 100,
+      used_count INTEGER DEFAULT 0,
+      is_active INTEGER DEFAULT 1,
+      created_at ${tsType}
+    )`,
+
+    // 23. Payments Ledger (Phase 11)
+    `CREATE TABLE IF NOT EXISTS payments (
+      id ${idType},
+      business_id INTEGER NOT NULL,
+      invoice_id INTEGER,
+      transaction_ref VARCHAR(100) NOT NULL,
+      gateway VARCHAR(50) DEFAULT 'sandbox',
+      amount REAL NOT NULL,
+      currency VARCHAR(10) DEFAULT 'INR',
+      status VARCHAR(50) DEFAULT 'captured',
+      idempotency_key VARCHAR(100),
+      payload_json TEXT,
+      created_at ${tsType}
+    )`,
+
+    // 24. Deleted Businesses Audit (Phase 2 & Phase 14)
+    `CREATE TABLE IF NOT EXISTS deleted_businesses_audit (
+      id ${idType},
+      business_id INTEGER NOT NULL,
+      business_name VARCHAR(150) NOT NULL,
+      deleted_by_user_id INTEGER,
+      deleted_by_email VARCHAR(150),
+      snapshot_json TEXT NOT NULL,
+      records_count_json TEXT,
+      deleted_at ${tsType}
     )`
   ];
 
@@ -321,7 +401,84 @@ async function initSchema() {
     }
   }
 
-  console.log("[Schema] All database tables ready.");
+  // Safe migrations for incremental columns on existing tables
+  await applyIncrementalMigrations();
+
+  // Create performance and tenant isolation indexes
+  await applyIndexes();
+
+  console.log("[Schema] All database tables and migrations ready.");
+}
+
+/**
+ * Safely add missing columns to existing tables without breaking data
+ */
+async function applyIncrementalMigrations() {
+  const driver = db.getDriver();
+  const migrations = [
+    { table: "businesses", column: "status", def: "VARCHAR(50) DEFAULT 'active'" },
+    { table: "businesses", column: "is_archived", def: "INTEGER DEFAULT 0" },
+    { table: "businesses", column: "archived_at", def: "DATETIME DEFAULT NULL" },
+    { table: "businesses", column: "deleted_at", def: "DATETIME DEFAULT NULL" },
+    { table: "businesses", column: "deleted_by", def: "INTEGER DEFAULT NULL" },
+    { table: "leads", column: "follow_up_date", def: "VARCHAR(20) DEFAULT NULL" },
+    { table: "leads", column: "assigned_to", def: "VARCHAR(100) DEFAULT NULL" },
+    { table: "business_settings", column: "tagline", def: "TEXT DEFAULT NULL" },
+    { table: "business_settings", column: "primary_color", def: "VARCHAR(50) DEFAULT 'blue'" },
+    { table: "business_settings", column: "banner_message", def: "TEXT DEFAULT NULL" },
+    { table: "automation_logs", column: "delivery_mode", def: "VARCHAR(50) DEFAULT 'simulated'" },
+  ];
+
+  for (const m of migrations) {
+    try {
+      if (driver === "sqlite") {
+        const cols = await db.all(`PRAGMA table_info(${m.table})`);
+        const exists = cols.some((c) => c.name === m.column);
+        if (!exists) {
+          await db.exec(`ALTER TABLE ${m.table} ADD COLUMN ${m.column} ${m.def}`);
+          console.log(`[Migration] Added column ${m.table}.${m.column}`);
+        }
+      } else {
+        // MySQL check
+        const cols = await db.all(
+          `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?`,
+          [m.table, m.column]
+        );
+        if (!cols || cols.length === 0) {
+          await db.exec(`ALTER TABLE ${m.table} ADD COLUMN ${m.column} ${m.def}`);
+          console.log(`[Migration] Added column ${m.table}.${m.column}`);
+        }
+      }
+    } catch (_err) {
+      // Ignore if already present
+    }
+  }
+}
+
+/**
+ * Apply performance and foreign key indexes
+ */
+async function applyIndexes() {
+  const indexes = [
+    "CREATE INDEX IF NOT EXISTS idx_leads_business ON leads(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_customers_business ON customers(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_users_business ON users(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_salon_appts_business ON salon_appointments(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_cafe_orders_business ON cafe_orders(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_invoices_business ON invoices(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_coupons_business ON coupons(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_payments_business ON payments(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_activity_business ON activity_logs(business_id)",
+    "CREATE INDEX IF NOT EXISTS idx_businesses_archived ON businesses(is_archived)",
+  ];
+
+  for (const idxSql of indexes) {
+    try {
+      await db.exec(idxSql);
+    } catch (_err) {
+      // Indexes may exist
+    }
+  }
 }
 
 module.exports = { initSchema };

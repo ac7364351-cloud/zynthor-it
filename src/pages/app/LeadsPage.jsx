@@ -6,6 +6,10 @@ import {
   FiTrash2,
   FiEdit,
   FiX,
+  FiEye,
+  FiUser,
+  FiCalendar,
+  FiCheckCircle,
 } from "react-icons/fi";
 import { api } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
@@ -18,6 +22,7 @@ export default function LeadsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editingLead, setEditingLead] = useState(null);
+  const [viewingLead, setViewingLead] = useState(null);
 
   // New Lead Form State
   const [newLead, setNewLead] = useState({
@@ -28,6 +33,8 @@ export default function LeadsPage() {
     budget: "₹5,000 - ₹10,000",
     source: "Website Direct",
     notes: "",
+    assigned_to: "",
+    follow_up_date: "",
   });
 
   const fetchLeads = async () => {
@@ -85,6 +92,8 @@ export default function LeadsPage() {
         budget: "₹5,000 - ₹10,000",
         source: "Website Direct",
         notes: "",
+        assigned_to: "",
+        follow_up_date: "",
       });
       fetchLeads();
     } catch (err) {
@@ -194,6 +203,7 @@ export default function LeadsPage() {
                 <tr className="text-theme-muted border-b border-theme-subtle pb-3">
                   <th className="pb-3 font-semibold">Lead Contact</th>
                   <th className="pb-3 font-semibold">Service & Budget</th>
+                  <th className="pb-3 font-semibold">Follow-Up & Assignee</th>
                   <th className="pb-3 font-semibold">Source</th>
                   <th className="pb-3 font-semibold">Status</th>
                   <th className="pb-3 font-semibold">Notes</th>
@@ -228,6 +238,18 @@ export default function LeadsPage() {
                         <div className="text-[10px] text-theme-muted">{lead.budget || "Standard"}</div>
                       </td>
                       <td className="py-3.5 pr-4">
+                        <div className="text-theme-secondary font-medium text-[11px] flex items-center gap-1.5">
+                          <FiUser className="text-theme-muted shrink-0" />
+                          <span>{lead.assigned_to || "Unassigned"}</span>
+                        </div>
+                        {lead.follow_up_date && (
+                          <div className="text-[10px] text-amber-400 flex items-center gap-1 mt-0.5">
+                            <FiCalendar className="shrink-0" />
+                            <span>Due: {lead.follow_up_date}</span>
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-3.5 pr-4">
                         <span className="text-[11px] text-theme-secondary font-mono">{lead.source}</span>
                       </td>
                       <td className="py-3.5 pr-4">
@@ -248,7 +270,14 @@ export default function LeadsPage() {
                       <td className="py-3.5 pr-4 max-w-xs truncate text-theme-muted text-[11px]">
                         {lead.notes || "—"}
                       </td>
-                      <td className="py-3.5 text-right space-x-2">
+                      <td className="py-3.5 text-right space-x-1">
+                        <button
+                          onClick={() => setViewingLead(lead)}
+                          className="p-1.5 rounded-lg text-theme-muted hover:text-emerald-400 hover:bg-theme-surface transition-colors cursor-pointer"
+                          title="View Lead Details"
+                        >
+                          <FiEye />
+                        </button>
                         <button
                           onClick={() => setEditingLead(lead)}
                           className="p-1.5 rounded-lg text-theme-muted hover:text-blue-400 hover:bg-theme-surface transition-colors cursor-pointer"
@@ -347,6 +376,28 @@ export default function LeadsPage() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-theme-secondary font-semibold mb-1">Assign to Staff</label>
+                  <input
+                    type="text"
+                    value={newLead.assigned_to}
+                    onChange={(e) => setNewLead({ ...newLead, assigned_to: e.target.value })}
+                    placeholder="e.g. Vikram Sharma"
+                    className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-theme-primary placeholder-theme-muted focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-theme-secondary font-semibold mb-1">Follow-up Date</label>
+                  <input
+                    type="date"
+                    value={newLead.follow_up_date}
+                    onChange={(e) => setNewLead({ ...newLead, follow_up_date: e.target.value })}
+                    className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-theme-primary placeholder-theme-muted focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-theme-secondary font-semibold mb-1">Notes</label>
                 <textarea
@@ -438,6 +489,28 @@ export default function LeadsPage() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-theme-secondary font-semibold mb-1">Assign to Staff</label>
+                  <input
+                    type="text"
+                    value={editingLead.assigned_to || ""}
+                    onChange={(e) => setEditingLead({ ...editingLead, assigned_to: e.target.value })}
+                    placeholder="Staff member name"
+                    className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-theme-primary focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-theme-secondary font-semibold mb-1">Follow-up Date</label>
+                  <input
+                    type="date"
+                    value={editingLead.follow_up_date || ""}
+                    onChange={(e) => setEditingLead({ ...editingLead, follow_up_date: e.target.value })}
+                    className="w-full bg-theme-surface border border-theme-subtle rounded-xl px-3 py-2 text-theme-primary focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-theme-secondary font-semibold mb-1">Status</label>
                 <select
@@ -479,6 +552,90 @@ export default function LeadsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Lead Details Modal */}
+      {viewingLead && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-lg bg-theme-card border border-theme-subtle rounded-3xl p-6 space-y-4 shadow-2xl text-theme-primary">
+            <div className="flex items-center justify-between pb-3 border-b border-theme-subtle">
+              <div className="flex items-center gap-2">
+                <FiUser className="text-blue-500 text-base" />
+                <h3 className="text-base font-bold text-theme-primary">{viewingLead.name}</h3>
+              </div>
+              <button
+                onClick={() => setViewingLead(null)}
+                className="text-theme-muted hover:text-theme-primary cursor-pointer"
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs">
+              <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-theme-surface border border-theme-subtle">
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Email</span>
+                  <span className="font-medium text-theme-primary">{viewingLead.email}</span>
+                </div>
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Phone</span>
+                  <span className="font-medium text-theme-primary">{viewingLead.phone || "Not provided"}</span>
+                </div>
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Service</span>
+                  <span className="font-medium text-theme-primary">{viewingLead.service || "General Inquiry"}</span>
+                </div>
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Budget</span>
+                  <span className="font-medium text-theme-primary">{viewingLead.budget || "Standard"}</span>
+                </div>
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Status</span>
+                  <span className="font-bold uppercase text-blue-400">{viewingLead.status}</span>
+                </div>
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Lead Source</span>
+                  <span className="font-mono text-theme-primary">{viewingLead.source}</span>
+                </div>
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Assigned Staff</span>
+                  <span className="font-medium text-theme-primary">{viewingLead.assigned_to || "Unassigned"}</span>
+                </div>
+                <div>
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold">Follow-Up Date</span>
+                  <span className="font-medium text-amber-400">{viewingLead.follow_up_date || "No date set"}</span>
+                </div>
+              </div>
+
+              {viewingLead.notes && (
+                <div className="p-3 rounded-xl bg-theme-surface border border-theme-subtle">
+                  <span className="text-theme-muted block text-[10px] uppercase font-semibold mb-1">Notes & History</span>
+                  <p className="text-theme-secondary whitespace-pre-wrap">{viewingLead.notes}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-theme-subtle">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingLead(viewingLead);
+                  setViewingLead(null);
+                }}
+                className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-xs cursor-pointer"
+              >
+                Edit Lead
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewingLead(null)}
+                className="px-4 py-1.5 text-theme-muted hover:text-theme-primary text-xs cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
