@@ -169,12 +169,13 @@ app.get("/", (req, res) => {
 app.get("/api/health", (req, res) => {
   pool.query("SELECT 1 AS healthy", (err) => {
     if (err) {
+      console.error("[Health Check Error]:", err.message);
       return res.status(500).json({
         status: "error",
         database: "disconnected",
         hasDbUrl: Boolean(process.env.DATABASE_URL),
         hasDbHost: Boolean(process.env.DB_HOST),
-        error: err ? (err.message || err.code || String(err)) : "unknown",
+        error: process.env.NODE_ENV === "production" ? "Database connection error" : (err ? (err.message || err.code || String(err)) : "unknown"),
       });
     }
     res.json({
@@ -185,6 +186,41 @@ app.get("/api/health", (req, res) => {
     });
   });
 });
+
+// Lightweight sliding-window IP rate limiter for spam protection
+const ipSubmissions = new Map();
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const MAX_REQUESTS_PER_WINDOW = 15; // Max 15 submissions per 15 mins per IP
+
+// Periodic cleanup of stale rate limiter timestamps (every 10 minutes)
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, timestamps] of ipSubmissions.entries()) {
+    const valid = timestamps.filter(ts => now - ts < RATE_LIMIT_WINDOW_MS);
+    if (valid.length === 0) {
+      ipSubmissions.delete(ip);
+    } else {
+      ipSubmissions.set(ip, valid);
+    }
+  }
+}, 10 * 60 * 1000).unref();
+
+const inquiryRateLimiter = (req, res, next) => {
+  const clientIp = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || "unknown";
+  const now = Date.now();
+  const timestamps = (ipSubmissions.get(clientIp) || []).filter(ts => now - ts < RATE_LIMIT_WINDOW_MS);
+
+  if (timestamps.length >= MAX_REQUESTS_PER_WINDOW) {
+    return res.status(429).json({
+      success: false,
+      message: "Too many submission attempts. Please wait a few minutes before submitting another inquiry."
+    });
+  }
+
+  timestamps.push(now);
+  ipSubmissions.set(clientIp, timestamps);
+  next();
+};
 
 // Inquiry handler (supports both general contact inquiries and detailed quote requests)
 const handleInquiry = (req, res) => {
@@ -264,8 +300,8 @@ const handleInquiry = (req, res) => {
   );
 };
 
-app.post("/api/contact", handleInquiry);
-app.post("/api/quote", handleInquiry);
+app.post("/api/contact", inquiryRateLimiter, handleInquiry);
+app.post("/api/quote", inquiryRateLimiter, handleInquiry);
 
 // Demo booking handler
 const handleDemoBooking = (req, res) => {
@@ -337,7 +373,7 @@ const handleDemoBooking = (req, res) => {
   );
 };
 
-app.post("/api/book-demo", handleDemoBooking);
+app.post("/api/book-demo", inquiryRateLimiter, handleDemoBooking);
 
 const PORT = process.env.PORT || 8000;
 
