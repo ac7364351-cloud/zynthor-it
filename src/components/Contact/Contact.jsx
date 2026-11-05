@@ -45,6 +45,7 @@ const Contact = ({ preselectedService, initialTab = "quote" }) => {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [submittedId, setSubmittedId] = useState(null);
+  const [submittedData, setSubmittedData] = useState({ name: "", email: "", type: "quote" });
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState(null);
 
@@ -115,6 +116,11 @@ const Contact = ({ preselectedService, initialTab = "quote" }) => {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        setSubmittedData({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          type: activeTab,
+        });
         setSubmitted(true);
         setSubmittedId(data.id || Math.floor(1000 + Math.random() * 9000));
         setFormData({
@@ -228,13 +234,13 @@ const Contact = ({ preselectedService, initialTab = "quote" }) => {
                   Inquiry Received Successfully!
                 </h3>
                 <p className="text-slate-300 text-sm max-w-md mx-auto mb-4 leading-relaxed">
-                  Thank you, <span className="font-semibold text-white">{formData.name}</span>. Your 
-                  {activeTab === "quote" ? " quote request" : " message"} has been logged in our database
+                  Thank you, <span className="font-semibold text-white">{submittedData.name || "Client"}</span>. Your 
+                  {submittedData.type === "quote" ? " quote request" : " message"} has been logged in our database
                   (Reference ID: #{submittedId}).
                 </p>
                 <p className="text-xs text-slate-400 max-w-sm mx-auto mb-8 leading-relaxed">
                   Our engineering team reviews inquiries within 2 to 4 hours. We will follow up at{" "}
-                  <span className="text-blue-400 font-mono">{formData.email}</span>.
+                  <span className="text-blue-400 font-mono">{submittedData.email || "your provided email"}</span>.
                 </p>
 
                 <button
