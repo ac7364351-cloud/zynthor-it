@@ -16,6 +16,8 @@ import PortfolioPage from "./pages/PortfolioPage.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import ProductBusinessOSPage from "./pages/ProductBusinessOSPage.jsx";
+import BookDemoPage from "./pages/BookDemoPage.jsx";
 
 // Business OS Layout & Workspace Pages
 import BusinessOSLayout from "./layouts/BusinessOSLayout.jsx";
@@ -175,13 +177,15 @@ function App() {
                   />
                 }
               />
-              <Route
-                path="services"
-                element={<ServicesPage onSelectPackage={handleSelectPackage} />}
-              />
+              <Route path="products/business-os" element={<ProductBusinessOSPage />} />
               <Route
                 path="pricing"
                 element={<PricingPage onSelectPackage={handleSelectPackage} />}
+              />
+              <Route path="book-demo" element={<BookDemoPage />} />
+              <Route
+                path="services"
+                element={<ServicesPage onSelectPackage={handleSelectPackage} />}
               />
               <Route path="portfolio" element={<PortfolioPage />} />
               <Route path="about" element={<AboutPage />} />
@@ -190,6 +194,13 @@ function App() {
                 element={<ContactPage selectedService={selectedService} />}
               />
               <Route path="*" element={<NotFoundPage />} />
+            </Route>
+
+            {/* Direct convenience marketing routes (under MarketingLayout) */}
+            <Route element={<MarketingLayout onOpenQuote={handleOpenQuote} />}>
+              <Route path="/products/business-os" element={<ProductBusinessOSPage />} />
+              <Route path="/pricing" element={<PricingPage onSelectPackage={handleSelectPackage} />} />
+              <Route path="/book-demo" element={<BookDemoPage />} />
             </Route>
 
             {/* ==========================================================

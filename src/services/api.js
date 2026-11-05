@@ -171,4 +171,8 @@ export const api = {
   inviteTeamMember: (data) => request("/api/team", { method: "POST", body: JSON.stringify(data) }),
   getSubscription: () => request("/api/subscription"),
   upgradeSubscription: (plan) => request("/api/subscription/upgrade", { method: "POST", body: JSON.stringify({ plan }) }),
+
+  // 9. Public Inquiries & Flagship Demo Booking
+  submitContact: (data) => request("/api/contact", { method: "POST", body: JSON.stringify(data) }),
+  bookDemo: (data) => request("/api/book-demo", { method: "POST", body: JSON.stringify(data) }),
 };

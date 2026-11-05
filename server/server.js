@@ -924,6 +924,54 @@ const handlePublicInquiry = async (req, res) => {
 app.post("/api/contact", handlePublicInquiry);
 app.post("/api/quote", handlePublicInquiry);
 
+// Flagship Demo Booking Inquiries
+app.post("/api/book-demo", async (req, res) => {
+  try {
+    const { business_name, owner_name, email, phone, business_category, interested_plan, message } = req.body;
+    if (!business_name || !owner_name || !email || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill all required fields: Business Name, Owner Name, Email, and Phone Number.",
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: "Please provide a valid business email address." });
+    }
+
+    const businessId = 1; // Default primary tenant for commercial inbound software leads
+    const fullService = `Business OS Demo (${business_category || "General"})`;
+    const fullNotes = `Business: ${business_name.trim()} | Plan: ${interested_plan || "Growth (₹1,499)"} | Notes: ${message ? message.trim() : "None provided"}`;
+
+    await db.run(
+      `INSERT INTO contacts (name, email, phone, service, budget, message, inquiry_type)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [owner_name.trim(), email.trim(), phone.trim(), fullService, interested_plan || "Growth", fullNotes, "demo_booking"]
+    );
+
+    const leadRes = await db.run(
+      `INSERT INTO leads (business_id, name, email, phone, service, budget, source, status, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [businessId, owner_name.trim(), email.trim(), phone.trim(), fullService, interested_plan || "Growth", "Website Demo Request", "new", fullNotes]
+    );
+
+    await db.run(
+      `INSERT INTO notifications (business_id, title, message, type, link)
+       VALUES (?, ?, ?, ?, ?)`,
+      [businessId, "New Business OS Demo Scheduled", `${owner_name.trim()} (${business_name.trim()}) requested walkthrough for ${interested_plan || "Growth"} tier`, "lead", "/leads"]
+    );
+
+    res.json({
+      success: true,
+      message: `Thank you, ${owner_name}! Your live walkthrough request for ${business_name} has been received. Our solutions team will contact you within 24 hours.`,
+      leadId: leadRes.insertId,
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // CRM Leads List
 app.get("/api/leads", authenticate, async (req, res) => {
   try {

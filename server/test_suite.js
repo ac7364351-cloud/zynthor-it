@@ -294,6 +294,46 @@ async function runTestSuite() {
     assert.strictEqual(discountAmount, 500, "Discount amount must match percentage calculation");
   });
 
+  // 13. Demo Booking Pipeline Inbound Flow
+  await test("Demo Booking Form Ingestion & CRM Pipeline Routing", async () => {
+    const testPayload = {
+      business_name: "Green Valley Bistro",
+      owner_name: "Rajesh Kumar",
+      email: "rajesh@greenvalley.in",
+      phone: "+919876543210",
+      business_category: "Cafe, Bistro & Dining",
+      interested_plan: "Growth (₹1,499/mo)",
+      message: "Need contactless QR menu and 2 KDS screens."
+    };
+
+    const businessId = 1;
+    const fullService = `Business OS Demo (${testPayload.business_category})`;
+    const fullNotes = `Business: ${testPayload.business_name} | Plan: ${testPayload.interested_plan} | Notes: ${testPayload.message}`;
+
+    const contactRes = await db.run(
+      `INSERT INTO contacts (name, email, phone, service, budget, message, inquiry_type)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [testPayload.owner_name, testPayload.email, testPayload.phone, fullService, testPayload.interested_plan, fullNotes, "demo_booking"]
+    );
+    assert.ok(contactRes.insertId, "Contact record must be created");
+
+    const leadRes = await db.run(
+      `INSERT INTO leads (business_id, name, email, phone, service, budget, source, status, notes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [businessId, testPayload.owner_name, testPayload.email, testPayload.phone, fullService, testPayload.interested_plan, "Website Demo Request", "new", fullNotes]
+    );
+    assert.ok(leadRes.insertId, "Lead record must be created for tenant 1");
+
+    const lead = await db.get("SELECT * FROM leads WHERE id = ?", [leadRes.insertId]);
+    assert.strictEqual(lead.source, "Website Demo Request");
+    assert.strictEqual(lead.status, "new");
+    assert.strictEqual(lead.email, testPayload.email);
+
+    // Clean up
+    await db.run("DELETE FROM contacts WHERE id = ?", [contactRes.insertId]);
+    await db.run("DELETE FROM leads WHERE id = ?", [leadRes.insertId]);
+  });
+
   console.log("------------------------------------------------------------------");
   console.log(`TEST SUMMARY: ${passed} Passed, ${failed} Failed out of ${passed + failed} Tests.`);
   console.log("------------------------------------------------------------------");
