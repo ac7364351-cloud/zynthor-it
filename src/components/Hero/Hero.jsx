@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { FiArrowRight, FiCheckCircle, FiShield, FiClock, FiCpu, FiDatabase, FiLayers } from "react-icons/fi";
 import heroWorkspaceImg from "../../assets/images/hero-workspace.jpg";
@@ -80,7 +79,7 @@ const Hero = ({ onOpenQuote }) => {
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-semibold tracking-wide uppercase mb-6 shadow-sm"
             >
               <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-              <span>Software Engineering Studio • Creators of Zynthor Business OS</span>
+              <span>Full-Stack Web Development • Modern Digital Studio</span>
             </motion.div>
 
             {/* Main Headline */}
@@ -102,38 +101,31 @@ const Hero = ({ onOpenQuote }) => {
               custom={2}
               className="text-slate-300 text-base sm:text-lg mt-6 max-w-2xl leading-relaxed font-normal"
             >
-              From custom business websites and bespoke web applications to our flagship SaaS product,{" "}
-              <span className="text-white font-semibold">Zynthor Business OS</span>, we engineer production-grade
-              digital solutions. Clean architecture, transparent milestone pricing, and 100% complete source code ownership.
+              From business websites to data dashboards, we help companies build effective digital 
+              experiences — wherever they are. Clean architecture, transparent milestone pricing, 
+              and 100% complete source code ownership.
             </motion.p>
 
             {/* Action CTAs */}
             <motion.div
               variants={fadeIn}
               custom={3}
-              className="flex flex-wrap items-stretch sm:items-center gap-3.5 mt-8"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-8"
             >
               <button
                 type="button"
                 onClick={onOpenQuote}
-                className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold px-6 py-3.5 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 hover:-translate-y-0.5 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold px-7 py-3.5 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 hover:-translate-y-0.5 cursor-pointer"
               >
-                <span>Request Project Quote</span>
+                <span>Request a Project Quote</span>
                 <FiArrowRight className="text-base" />
               </button>
 
-              <Link
-                to="/website/products/business-os"
-                className="inline-flex items-center justify-center gap-2 border border-amber-500/50 hover:border-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-semibold px-5 py-3.5 rounded-xl text-xs uppercase tracking-wider transition-all"
-              >
-                <span>Explore Business OS</span>
-              </Link>
-
               <a
                 href="#pricing"
-                className="inline-flex items-center justify-center gap-2 border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-900 text-slate-300 hover:text-white font-semibold px-5 py-3.5 rounded-xl text-xs uppercase tracking-wider transition-all"
+                className="inline-flex items-center justify-center gap-2 border border-slate-800 hover:border-slate-700 bg-slate-900/60 hover:bg-slate-900 text-slate-200 hover:text-white font-semibold px-6 py-3.5 rounded-xl text-sm transition-all"
               >
-                <span>Packages (from ₹1,499)</span>
+                <span>View Affordable Packages (from ₹1,499)</span>
               </a>
             </motion.div>
 

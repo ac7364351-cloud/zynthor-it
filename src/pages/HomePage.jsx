@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import Hero from "../components/Hero/Hero.jsx";
-import BusinessOSPromo from "../components/BusinessOSPromo/BusinessOSPromo.jsx";
 import Services from "../components/Services/Services.jsx";
 import Pricing from "../components/Pricing/Pricing.jsx";
 import Process from "../components/Process/Process.jsx";
@@ -13,13 +11,9 @@ import CTA from "../components/CTA/CTA.jsx";
 import Contact from "../components/Contact/Contact.jsx";
 
 const HomePage = ({ selectedService, onSelectPackage, onOpenQuote }) => {
-  useEffect(() => {
-    document.title = "Zynthor IT — Software Engineering, Web Applications & Zynthor Business OS";
-  }, []);
   return (
     <>
       <Hero onOpenQuote={onOpenQuote} />
-      <BusinessOSPromo />
       <Services onSelectService={onSelectPackage} />
       <Pricing onSelectPackage={onSelectPackage} />
       <Process />

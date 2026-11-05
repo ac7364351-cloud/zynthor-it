@@ -8,7 +8,7 @@ const Navbar = ({ onOpenQuote }) => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const isHome = location.pathname === "/website" || location.pathname === "/website/";
+  const isHome = location.pathname === "/" || location.pathname === "";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +36,8 @@ const Navbar = ({ onOpenQuote }) => {
         }
       }
     } else {
-      navigate("/website#contact-form");
+      // Navigate to homepage contact form or contact page
+      navigate("/#contact-form");
     }
   };
 
@@ -53,15 +54,14 @@ const Navbar = ({ onOpenQuote }) => {
   };
 
   const navLinks = [
-    { label: "Home", href: "/website", anchor: "home", isPage: true },
-    { label: "Products", href: "/website/products/business-os", isPage: true },
-    { label: "Services", href: "/website/services", anchor: "services" },
-    { label: "Pricing", href: "/website/pricing", isPage: true },
-    { label: "Process", href: "/website#process", anchor: "process" },
-    { label: "Portfolio", href: "/website/portfolio", anchor: "portfolio" },
-    { label: "About", href: "/website/about", anchor: "about" },
-    { label: "FAQ", href: "/website#faq", anchor: "faq" },
-    { label: "Contact", href: "/website/contact", anchor: "contact" },
+    { label: "Home", href: "/", anchor: "home", isPage: true },
+    { label: "Services", href: "/services", anchor: "services" },
+    { label: "Pricing", href: "/pricing", anchor: "pricing" },
+    { label: "Process", href: "/#process", anchor: "process" },
+    { label: "Portfolio", href: "/portfolio", anchor: "portfolio" },
+    { label: "About", href: "/about", anchor: "about" },
+    { label: "FAQ", href: "/#faq", anchor: "faq" },
+    { label: "Contact", href: "/contact", anchor: "contact" },
   ];
 
   return (
@@ -76,7 +76,7 @@ const Navbar = ({ onOpenQuote }) => {
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo with New Geometric Circuit Identity */}
           <Link
-            to="/website"
+            to="/"
             onClick={(e) => {
               closeMenu();
               if (isHome) {
@@ -91,10 +91,10 @@ const Navbar = ({ onOpenQuote }) => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-5 xl:gap-6 text-sm font-medium">
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.href;
-              return isHome && !link.isPage ? (
+              return isHome ? (
                 <a
                   key={link.label}
                   href={`#${link.anchor}`}
@@ -119,27 +119,21 @@ const Navbar = ({ onOpenQuote }) => {
           </nav>
 
           {/* Action Button: Dedicated Quote trigger & Business OS launch */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden md:flex items-center gap-3">
             <Link
-              to="/website/book-demo"
-              className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/40 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm hover:border-amber-400 cursor-pointer"
-            >
-              <span>Book Demo</span>
-            </Link>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-blue-400 border border-blue-500/40 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm hover:border-blue-400 cursor-pointer"
+              to="/app"
+              className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-blue-400 border border-blue-500/40 text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm hover:border-blue-400 cursor-pointer"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Launch OS</span>
+              <span>Launch Business OS</span>
             </Link>
             <button
               type="button"
               onClick={handleQuoteClick}
-              className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 cursor-pointer uppercase tracking-wider"
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 cursor-pointer uppercase tracking-wider"
               aria-label="Get a Project Quote"
             >
-              <span>Get Quote</span>
+              <span>Get a Quote</span>
               <FiArrowRight className="text-sm" />
             </button>
           </div>
@@ -160,7 +154,7 @@ const Navbar = ({ onOpenQuote }) => {
           <div className="lg:hidden border-t border-slate-800/80 py-5 bg-slate-950/98 backdrop-blur-xl">
             <div className="flex flex-col gap-1 text-sm">
               {navLinks.map((link) => {
-                return isHome && !link.isPage ? (
+                return isHome ? (
                   <a
                     key={link.label}
                     href={`#${link.anchor}`}
@@ -187,14 +181,7 @@ const Navbar = ({ onOpenQuote }) => {
 
               <div className="pt-4 mt-2 border-t border-slate-800/80 px-4 space-y-2">
                 <Link
-                  to="/website/book-demo"
-                  onClick={closeMenu}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 border border-amber-500/40 text-amber-300 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-sm"
-                >
-                  <span>Book a Live Demo</span>
-                </Link>
-                <Link
-                  to="/"
+                  to="/app"
                   onClick={closeMenu}
                   className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 border border-blue-500/40 text-blue-400 font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider shadow-sm"
                 >

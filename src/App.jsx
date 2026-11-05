@@ -16,8 +16,6 @@ import PortfolioPage from "./pages/PortfolioPage.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
-import ProductBusinessOSPage from "./pages/ProductBusinessOSPage.jsx";
-import BookDemoPage from "./pages/BookDemoPage.jsx";
 
 // Business OS Layout & Workspace Pages
 import BusinessOSLayout from "./layouts/BusinessOSLayout.jsx";
@@ -103,7 +101,7 @@ function App() {
           <Routes>
             {/* ==========================================================
                 1. PRIMARY SAAS APPLICATION ENTRY & AUTHENTICATION
-                Root '/' always opens the original Zynthor Business OS SaaS software.
+                Root '/' always opens the SaaS software, never a marketing site.
                 ========================================================== */}
             <Route path="/" element={<AppEntry />} />
             <Route path="/login" element={<LoginPage />} />
@@ -111,7 +109,7 @@ function App() {
 
             {/* ==========================================================
                 2. CORE BUSINESS OS WORKSPACE DIRECT ROUTES
-                All original SaaS dashboards and business management modules.
+                All SaaS dashboards and business management modules.
                 ========================================================== */}
             <Route element={<BusinessOSLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
@@ -163,8 +161,8 @@ function App() {
             <Route path="/menu/:slug" element={<PublicCafeMenu />} />
 
             {/* ==========================================================
-                5. STANDALONE ZYNTHOR IT MARKETING WEBSITE (/website)
-                Strictly separated under /website — never replaces or damages the SaaS OS.
+                5. STANDALONE AGENCY MARKETING WEBSITE
+                Strictly separated under /website — never replaces the SaaS OS.
                 ========================================================== */}
             <Route path="/website" element={<MarketingLayout onOpenQuote={handleOpenQuote} />}>
               <Route
@@ -177,16 +175,13 @@ function App() {
                   />
                 }
               />
-              <Route path="products" element={<ProductBusinessOSPage />} />
-              <Route path="products/business-os" element={<ProductBusinessOSPage />} />
-              <Route
-                path="pricing"
-                element={<PricingPage onSelectPackage={handleSelectPackage} />}
-              />
-              <Route path="book-demo" element={<BookDemoPage />} />
               <Route
                 path="services"
                 element={<ServicesPage onSelectPackage={handleSelectPackage} />}
+              />
+              <Route
+                path="pricing"
+                element={<PricingPage onSelectPackage={handleSelectPackage} />}
               />
               <Route path="portfolio" element={<PortfolioPage />} />
               <Route path="about" element={<AboutPage />} />

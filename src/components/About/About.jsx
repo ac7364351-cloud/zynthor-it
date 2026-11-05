@@ -29,9 +29,8 @@ const About = ({ onOpenQuote }) => {
             </h2>
 
             <p className="text-slate-300 text-base md:text-lg mt-6 leading-relaxed">
-              Zynthor IT is an independent software development and technology company specializing in high-performance
-              websites, bespoke web applications, and our flagship multi-tenant SaaS platform, 
-              <span className="text-blue-400 font-semibold"> Zynthor Business OS</span>.
+              Zynthor IT is an independent digital engineering agency focused on custom website development, 
+              full-stack web applications, business automation, and data analytics.
             </p>
 
             <p className="text-slate-400 text-base mt-4 leading-relaxed">

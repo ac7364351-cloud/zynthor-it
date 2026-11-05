@@ -5,7 +5,7 @@ import Logo from "../Brand/Logo.jsx";
 const Footer = ({ onOpenQuote }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const isHome = location.pathname === "/website" || location.pathname === "/website/";
+  const isHome = location.pathname === "/" || location.pathname === "";
 
   const handleQuoteClick = (e) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ const Footer = ({ onOpenQuote }) => {
         }
       }
     } else {
-      navigate("/website#contact-form");
+      navigate("/#contact-form");
     }
   };
 
@@ -29,12 +29,12 @@ const Footer = ({ onOpenQuote }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Company Bio & New Geometric Logo */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/website" className="group cursor-pointer inline-block" aria-label="Zynthor IT Home">
+            <Link to="/" className="group cursor-pointer inline-block" aria-label="Zynthor IT Home">
               <Logo size="md" />
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
               An independent digital engineering studio specializing in high-performance business websites, 
-              custom full-stack web applications, and our flagship SaaS product, Zynthor Business OS.
+              custom full-stack web applications, and data analytics solutions.
             </p>
             <div className="pt-2 text-xs text-slate-500 space-y-1">
               <p className="flex items-center gap-2">
@@ -51,27 +51,27 @@ const Footer = ({ onOpenQuote }) => {
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
-                <Link to="/website/services" className="hover:text-blue-400 transition-colors">
+                <Link to="/services" className="hover:text-blue-400 transition-colors">
                   Landing Pages (from ₹1,499)
                 </Link>
               </li>
               <li>
-                <Link to="/website/services" className="hover:text-blue-400 transition-colors">
+                <Link to="/services" className="hover:text-blue-400 transition-colors">
                   Basic Websites (from ₹2,999)
                 </Link>
               </li>
               <li>
-                <Link to="/website/services" className="hover:text-blue-400 transition-colors">
+                <Link to="/services" className="hover:text-blue-400 transition-colors">
                   Standard Websites (from ₹4,999)
                 </Link>
               </li>
               <li>
-                <Link to="/website/services" className="hover:text-blue-400 transition-colors">
+                <Link to="/services" className="hover:text-blue-400 transition-colors">
                   Power BI Dashboards (from ₹1,999)
                 </Link>
               </li>
               <li>
-                <Link to="/website/services" className="hover:text-blue-400 transition-colors">
+                <Link to="/services" className="hover:text-blue-400 transition-colors">
                   Custom Web Apps (from ₹7,999)
                 </Link>
               </li>
@@ -85,48 +85,33 @@ const Footer = ({ onOpenQuote }) => {
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-400">
               <li>
-                <Link to="/website" className="hover:text-blue-400 transition-colors">
+                <Link to="/" className="hover:text-blue-400 transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/website/products/business-os" className="text-amber-400 hover:text-amber-300 font-medium transition-colors">
-                  Business OS (SaaS)
-                </Link>
-              </li>
-              <li>
-                <Link to="/website/pricing" className="hover:text-blue-400 transition-colors">
-                  Pricing & Plans
-                </Link>
-              </li>
-              <li>
-                <Link to="/website/book-demo" className="hover:text-blue-400 transition-colors">
-                  Book a Demo
-                </Link>
-              </li>
-              <li>
-                <Link to="/website/services" className="hover:text-blue-400 transition-colors">
+                <Link to="/services" className="hover:text-blue-400 transition-colors">
                   Services
                 </Link>
               </li>
               <li>
-                <Link to="/website/portfolio" className="hover:text-blue-400 transition-colors">
+                <Link to="/pricing" className="hover:text-blue-400 transition-colors">
+                  Pricing (from ₹1,499)
+                </Link>
+              </li>
+              <li>
+                <Link to="/portfolio" className="hover:text-blue-400 transition-colors">
                   Case Studies
                 </Link>
               </li>
               <li>
-                <Link to="/website/about" className="hover:text-blue-400 transition-colors">
+                <Link to="/about" className="hover:text-blue-400 transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/website/contact" className="hover:text-blue-400 transition-colors">
+                <Link to="/contact" className="hover:text-blue-400 transition-colors">
                   Contact Form
-                </Link>
-              </li>
-              <li>
-                <Link to="/" className="text-blue-400 hover:text-blue-300 font-medium transition-colors flex items-center gap-1">
-                  <span>Launch SaaS Portal →</span>
                 </Link>
               </li>
             </ul>
