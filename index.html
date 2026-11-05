@@ -2,9 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Favicon & Touch Icons -->
+    <!-- Favicon & Search Engine Icons (Google Favicon 48px square standard) -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="144x144" href="/favicon-144x144.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -13,6 +18,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#020617" />
     <link rel="canonical" href="https://zynthor-it.vercel.app/" />
+
+    <!-- Google Search & Social Site Name Identifiers -->
+    <meta property="og:site_name" content="Zynthor IT" />
+    <meta name="application-name" content="Zynthor IT" />
+    <meta name="apple-mobile-web-app-title" content="Zynthor IT" />
+
     <script>
       if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
         window.history.scrollRestoration = "manual";
@@ -38,6 +49,27 @@
       content="High-performance websites, custom web applications, and data analytics tailored for growing businesses."
     />
     <meta name="twitter:image" content="https://zynthor-it.vercel.app/android-chrome-512x512.png" />
+
+    <!-- Schema.org Structured Data for Google Search Site Name & Logo -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Zynthor IT",
+        "alternateName": ["Zynthor", "ZynthorIT", "Zynthor IT Agency"],
+        "url": "https://zynthor-it.vercel.app/"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Zynthor IT",
+        "url": "https://zynthor-it.vercel.app/",
+        "logo": "https://zynthor-it.vercel.app/android-chrome-512x512.png",
+        "description": "Zynthor IT is an independent digital engineering agency specializing in custom website development, full-stack web applications, business software, and data analytics dashboards."
+      }
+    </script>
   </head>
   <body class="bg-slate-950 text-slate-100 antialiased">
     <div id="root"></div>
